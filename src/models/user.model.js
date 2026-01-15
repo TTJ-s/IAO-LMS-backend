@@ -12,7 +12,6 @@ const user_schema = new mongoose.Schema(
     postal_code: { type: String, trim: true },
     city: { type: String, trim: true },
     country: { type: String, trim: true },
-    password: { type: String, trim: true },
     otp: { type: String, trim: true },
     otp_tracking: {
       created_at: { type: Date },
@@ -41,6 +40,7 @@ const user_schema = new mongoose.Schema(
 
 user_schema.index({ email: 1 });
 user_schema.index({ phone: 1 });
+user_schema.index({ email: 1, phone: 1 });
 user_schema.index({ role: 1, status: 1 });
 
 user_schema.index({
