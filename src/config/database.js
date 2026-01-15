@@ -8,11 +8,14 @@ const connect_db = async () => {
     }
 
     const conn = await mongoose.connect(process.env.MONGO_URI, {
+      tls: true, //! Explicit TLS (GDPR / EU requirement)
       autoIndex: false, //! Disable automatic index creation for better performance in production
       serverSelectionTimeoutMS: 5000, //! Set server selection timeout to 5 seconds
       socketTimeoutMS: 45000, //! Set socket timeout to 45 seconds
       retryWrites: true, //! Enable retry writes
       w: "majority", //! Ensure write acknowledgment from majority of replica set nodes for durability
+      maxPoolSize: 10, //! Prevent connection explosion
+      minPoolSize: 1,
     });
     logger.info(`✅ MongoDB connected: ${conn.connection.host}`);
   } catch (error) {
