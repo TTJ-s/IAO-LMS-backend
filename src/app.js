@@ -4,7 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
-const { error_response } = require("./utils/response");
+const { error_response, success_response } = require("./utils/response");
 
 //! APP
 const app = express();
@@ -58,6 +58,19 @@ app.get("/health", (req, res) => {
     },
   });
 });
+
+//! BASE PATH
+const BASE_PATH = `/api/${process.env.API_VERSION || "v1"}`;
+
+//! BASE ROUTE
+app.get(BASE_PATH, (req, res) => {
+  return success_response(res, {
+    status: 200,
+    message: "IAO LMS API Gateway Active",
+  });
+});
+
+app.use(BASE_PATH, require("./routes"));
 
 //! 404 HANDLER
 app.use((req, res) => {

@@ -16,9 +16,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "NODE_ENV=development NODE_DEBUG=tls node --watch ./src/server.js",
+    "dev": "NODE_ENV=development node --watch ./src/server.js",
     "start": "NODE_ENV=production node ./src/server.js",
-    "win": "SET NODE_ENV=development&&NODE_DEBUG=tls&&node --watch ./src/server.js"
+    "win": "SET NODE_ENV=development&&node --watch ./src/server.js"
   },
   "dependencies": {
     "compression": "^1.8.1",

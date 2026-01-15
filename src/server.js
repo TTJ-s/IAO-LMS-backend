@@ -17,7 +17,13 @@ const server = http.createServer(app);
 
 //! Validate required environment variables
 function validate_env() {
-  const required = ["MONGO_URI", "NODE_ENV", "CORS_ORIGIN", "API_KEY"];
+  const required = [
+    "MONGO_URI",
+    "NODE_ENV",
+    "CORS_ORIGIN",
+    "API_KEY",
+    "API_VERSION",
+  ];
   const missing = required.filter((key) => !process.env[key]);
 
   if (missing.length > 0) {
