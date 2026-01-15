@@ -103,24 +103,6 @@ class role_controller {
       });
     }
   }
-
-  async delete_role(req, res) {
-    try {
-      const { id } = req.params;
-      const data = await role_service.delete(id);
-      return success_response(res, {
-        status: 200,
-        message: "Role deleted successfully",
-        data,
-      });
-    } catch (error) {
-      return error_response(res, {
-        status: 500,
-        message: error.message,
-        errors: error.stack,
-      });
-    }
-  }
 }
 
 module.exports = new role_controller();

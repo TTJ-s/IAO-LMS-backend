@@ -18,11 +18,6 @@ class role_service {
     return data;
   }
 
-  async delete(id) {
-    const data = await Role.findByIdAndDelete(id);
-    return data;
-  }
-
   async total_count(filters = {}) {
     const data = await Role.countDocuments(filters);
     return data;
