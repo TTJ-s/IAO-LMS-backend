@@ -74,9 +74,11 @@ class user_controller {
       const mapped_data = data.map((user) => {
         return {
           _id: user._id,
-          name: user.first_name + " " + user.last_name,
+          first_name: user.first_name,
+          last_name: user.last_name,
           status: user.status,
           role_name: user.role_access.name,
+          role_id: user.role_access._id,
           ...mask_user_contact(user),
         };
       });
