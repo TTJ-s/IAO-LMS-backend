@@ -13,11 +13,6 @@ class role_service {
     return data;
   }
 
-  async find_by_id(id) {
-    const data = await Role.findById(id);
-    return data;
-  }
-
   async update(id, payload) {
     const data = await Role.findByIdAndUpdate(id, payload, { new: true });
     return data;

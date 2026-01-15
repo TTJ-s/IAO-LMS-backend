@@ -9,7 +9,6 @@ router
 
 router
   .route("/:id")
-  .get(role_controller.get_role_by_id)
   .put(role_controller.update_role)
   .delete(role_controller.delete_role);
 

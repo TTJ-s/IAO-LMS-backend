@@ -70,6 +70,7 @@ app.get(BASE_PATH, (req, res) => {
   });
 });
 
+//! OTHER ROUTES
 app.use(BASE_PATH, require("./routes"));
 
 //! 404 HANDLER
