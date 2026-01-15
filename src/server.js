@@ -15,9 +15,21 @@ const logger = require("./utils/logger");
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 
+//! Validate required environment variables
+function validate_env() {
+  const required = ['MONGO_URI', 'NODE_ENV', 'CORS_ORIGIN'];
+  const missing = required.filter(key => !process.env[key]);
+  
+  if (missing.length > 0) {
+    console.error(`❌ Missing required env vars: ${missing.join(', ')}`);
+    process.exit(1);
+  }
+}
+
 //! Bootstrap server
 async function start_server() {
   try {
+    validate_env();
     await connect_db();
 
     server.listen(PORT, () => {
@@ -26,7 +38,7 @@ async function start_server() {
       );
     });
   } catch (error) {
-    logger.error("❌ Server startup failed", err);
+    logger.error("❌ Server startup failed", error);
     process.exit(1);
   }
 }
@@ -34,7 +46,7 @@ async function start_server() {
 start_server();
 
 //! Graceful shutdown
-function shutdown(signal) {
+function shutdown(signal = 'UNKNOWN') {
   logger.warn(`⚠️ Received ${signal}. Closing server...`);
 
   server.close(() => {
@@ -43,13 +55,13 @@ function shutdown(signal) {
   });
 
   setTimeout(() => {
-    logger.error("⏳ Force shutdown");
+    logger.error("⏳ Force shutdown after 10s timeout");
     process.exit(1);
   }, 10000);
 }
 
-process.on("SIGTERM", shutdown);
-process.on("SIGINT", shutdown);
+process.on("SIGTERM", () => shutdown('SIGTERM'));
+process.on("SIGINT", () => shutdown('SIGINT'));
 process.on("unhandledRejection", (reason) => {
   logger.error("Unhandled Rejection:", reason);
   shutdown("unhandledRejection");

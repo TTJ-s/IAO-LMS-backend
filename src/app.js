@@ -14,11 +14,21 @@ const app = express();
 app.use(helmet());
 app.use(mongo_sanitize());
 
-//! CORS
+//! CORS - Strict production configuration
+const allowed_origins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
+  : [];
+
+if (process.env.NODE_ENV === "production" && allowed_origins.length === 0) {
+  throw new Error("CORS_ORIGIN must be defined in production environment");
+}
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN?.split(",") || "*",
+    origin: allowed_origins.length > 0 ? allowed_origins : false,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-API-Key"],
   })
 );
 
@@ -51,11 +61,14 @@ app.use((req, res) => {
 });
 
 //! ERROR HANDLER
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
+  const status = err.status || err.statusCode || 500;
+  const is_dev = process.env.NODE_ENV !== "production";
+
   return error_response(res, {
-    status: err.status || 500,
-    message: err.message,
-    errors: err.errors,
+    status,
+    message: err.message || "Internal Server Error",
+    errors: is_dev ? err.errors : null,
   });
 });
 
