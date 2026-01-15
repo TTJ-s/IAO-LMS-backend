@@ -17,11 +17,11 @@ const server = http.createServer(app);
 
 //! Validate required environment variables
 function validate_env() {
-  const required = ['MONGO_URI', 'NODE_ENV', 'CORS_ORIGIN'];
-  const missing = required.filter(key => !process.env[key]);
-  
+  const required = ["MONGO_URI", "NODE_ENV", "CORS_ORIGIN", "API_KEY"];
+  const missing = required.filter((key) => !process.env[key]);
+
   if (missing.length > 0) {
-    console.error(`❌ Missing required env vars: ${missing.join(', ')}`);
+    console.error(`❌ Missing required env vars: ${missing.join(", ")}`);
     process.exit(1);
   }
 }
@@ -46,7 +46,7 @@ async function start_server() {
 start_server();
 
 //! Graceful shutdown
-function shutdown(signal = 'UNKNOWN') {
+function shutdown(signal = "UNKNOWN") {
   logger.warn(`⚠️ Received ${signal}. Closing server...`);
 
   server.close(() => {
@@ -60,8 +60,8 @@ function shutdown(signal = 'UNKNOWN') {
   }, 10000);
 }
 
-process.on("SIGTERM", () => shutdown('SIGTERM'));
-process.on("SIGINT", () => shutdown('SIGINT'));
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
 process.on("unhandledRejection", (reason) => {
   logger.error("Unhandled Rejection:", reason);
   shutdown("unhandledRejection");
