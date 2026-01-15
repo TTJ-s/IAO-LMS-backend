@@ -1,4 +1,4 @@
-const { Role } = require("../../models");
+const { Role, User } = require("../../models");
 
 class role_service {
   async create(payload) {
@@ -18,8 +18,18 @@ class role_service {
     return data;
   }
 
+  async delete(id) {
+    const data = await Role.findByIdAndDelete(id);
+    return data;
+  }
+
   async total_count(filters = {}) {
     const data = await Role.countDocuments(filters);
+    return data;
+  }
+
+  async find_admin_role_access(id) {
+    const data = await User.find({ role_access: id });
     return data;
   }
 }

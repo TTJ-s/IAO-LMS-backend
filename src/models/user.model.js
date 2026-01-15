@@ -40,6 +40,7 @@ const user_schema = new mongoose.Schema(
 
 user_schema.index({ email: 1 });
 user_schema.index({ phone: 1 });
+user_schema.index({ role_access: 1 });
 user_schema.index({ email: 1, phone: 1 });
 user_schema.index({ role: 1, status: 1 });
 

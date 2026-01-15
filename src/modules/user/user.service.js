@@ -37,6 +37,14 @@ class user_service {
     return data;
   }
 
+  async bulk_delete(ids) {
+    const data = await User.updateMany(
+      { _id: { $in: ids } },
+      { status: "deleted" }
+    );
+    return data;
+  }
+
   async total_count(filters = {}) {
     const data = await User.countDocuments(filters);
     return data;

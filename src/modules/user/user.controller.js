@@ -99,6 +99,12 @@ class user_controller {
   async update_status(req, res) {
     try {
       const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "User ID is required",
+        });
+      }
       const { status } = req.body;
       if (!["active", "inactive"].includes(status)) {
         return error_response(res, {
@@ -120,6 +126,54 @@ class user_controller {
         status: 200,
         message: "User status updated successfully",
         user_obj,
+      });
+    } catch (error) {
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async bulk_delete_admins(req, res) {
+    try {
+      const { ids } = req.body;
+      if (!ids || !ids.length) {
+        return error_response(res, {
+          status: 400,
+          message: "Admin IDs are required",
+        });
+      }
+      const data = await user_service.bulk_delete(ids);
+      return success_response(res, {
+        status: 200,
+        message: "Admins deleted successfully",
+        data,
+      });
+    } catch (error) {
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async delete_admin(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Admin ID is required",
+        });
+      }
+      const data = await user_service.delete(id);
+      return success_response(res, {
+        status: 200,
+        message: "Admin deleted successfully",
+        data,
       });
     } catch (error) {
       return error_response(res, {

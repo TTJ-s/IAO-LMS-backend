@@ -58,27 +58,15 @@ class role_controller {
     }
   }
 
-  async get_role_by_id(req, res) {
-    try {
-      const { id } = req.params;
-      const data = await role_service.find_by_id(id);
-      return success_response(res, {
-        status: 200,
-        message: "Role fetched successfully",
-        data,
-      });
-    } catch (error) {
-      return error_response(res, {
-        status: 500,
-        message: error.message,
-        errors: error.stack,
-      });
-    }
-  }
-
   async update_role(req, res) {
     try {
       const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Role ID is required",
+        });
+      }
       const { error, value } = validation.update_role_validation.validate(
         req.body
       );
@@ -93,6 +81,62 @@ class role_controller {
       return success_response(res, {
         status: 200,
         message: "Role updated successfully",
+        data,
+      });
+    } catch (error) {
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async delete_role(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Role ID is required",
+        });
+      }
+      const existing_admin_role_access =
+        await role_service.find_admin_role_access(id);
+      if (existing_admin_role_access.length) {
+        return error_response(res, {
+          status: 400,
+          message: "Cannot delete, Role Access associated with admin",
+        });
+      }
+      const data = await role_service.delete(id);
+      return success_response(res, {
+        status: 200,
+        message: "Role deleted successfully",
+        data,
+      });
+    } catch (error) {
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async bulk_delete_roles(req, res) {
+    try {
+      const { ids } = req.body;
+      if (!ids || !ids.length) {
+        return error_response(res, {
+          status: 400,
+          message: "Role ids are required",
+        });
+      }
+      const data = await role_service.bulk_delete(ids);
+      return success_response(res, {
+        status: 200,
+        message: "Roles deleted successfully",
         data,
       });
     } catch (error) {

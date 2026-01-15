@@ -7,6 +7,9 @@ router
   .post(role_controller.create_role)
   .get(role_controller.get_roles);
 
-router.route("/:id").put(role_controller.update_role);
+router
+  .route("/:id")
+  .put(role_controller.update_role)
+  .delete(role_controller.delete_role);
 
 module.exports = router;
