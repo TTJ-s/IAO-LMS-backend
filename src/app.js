@@ -4,7 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
-const mongo_sanitize = require("express-mongo-sanitize");
+const sanitize = require("mongo-sanitize");
 const { error_response } = require("./utils/response");
 
 //! MIDDLEWARE
@@ -12,7 +12,20 @@ const app = express();
 
 //! SECURITY
 app.use(helmet());
-app.use(mongo_sanitize());
+
+//! DATA SANITIZATION - Prevent NoSQL injection
+app.use((req, res, next) => {
+  if (req.body) {
+    req.body = sanitize(req.body);
+  }
+  if (req.params) {
+    req.params = sanitize(req.params);
+  }
+  if (req.query) {
+    req.query = sanitize(req.query);
+  }
+  next();
+});
 
 //! CORS - Strict production configuration
 const allowed_origins = process.env.CORS_ORIGIN
@@ -44,11 +57,20 @@ if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-//! HEALTH CHECK
+//! HEALTH CHECK - For Kubernetes/monitoring probes
 app.get("/health", (req, res) => {
+  const uptime = process.uptime();
+  const memory_usage = process.memory_usage();
+
   res.status(200).json({
     status: "ok",
-    timestamp: new Date(),
+    timestamp: new Date().toISOString(),
+    uptime: Math.floor(uptime),
+    environment: process.env.NODE_ENV,
+    memory: {
+      heapUsed: Math.round(memory_usage.heapUsed / 1024 / 1024) + "MB",
+      heapTotal: Math.round(memory_usage.heapTotal / 1024 / 1024) + "MB",
+    },
   });
 });
 
