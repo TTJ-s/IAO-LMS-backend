@@ -1,0 +1,33 @@
+{
+  "name": "iao-backend",
+  "version": "1.0.0",
+  "description": "A scalable role-based Learning Management System (LMS) backend built with Node.js, Express, and MongoDB.",
+  "homepage": "https://github.com/hello-world-ttj/IAO-LMS-backend#readme",
+  "bugs": {
+    "url": "https://github.com/hello-world-ttj/IAO-LMS-backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hello-world-ttj/IAO-LMS-backend.git"
+  },
+  "license": "ISC",
+  "author": "hello-world-ttj",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "NODE_ENV=development node --watch ./src/server.js",
+    "start": "NODE_ENV=production node ./src/server.js",
+    "win": "SET NODE_ENV=development&&node --watch ./src/server.js"
+  },
+  "dependencies": {
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "helmet": "^8.1.0",
+    "mongoose": "^9.1.3",
+    "morgan": "^1.10.1"
+  }
+}
