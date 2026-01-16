@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const country_schema = new mongoose.Schema(
   {
     name: { type: String, trim: true },
-    code: { type: String, trim: true },
+    code: { type: String, trim: true, uppercase: true },
     currency: { type: String, trim: true, uppercase: true },
     status: {
       type: Boolean,
