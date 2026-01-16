@@ -79,7 +79,10 @@ class user_controller {
   async get_admins(req, res) {
     try {
       const { page = 1, limit = 10 } = req.query;
-      const filters = {};
+      const filters = {
+        _id: { $ne: req.user._id },
+        role: "admin",
+      };
       const options = {
         page,
         limit,
@@ -182,7 +185,7 @@ class user_controller {
           message: "Admin IDs are required",
         });
       }
-      const data = await user_service.bulk_delete(ids);
+      const data = await user_service.bulk_delete(ids, req.user._id);
       return success_response(res, {
         status: 200,
         message: "Admins deleted successfully",
@@ -212,7 +215,7 @@ class user_controller {
           message: "Admin ID is required",
         });
       }
-      const data = await user_service.delete(id);
+      const data = await user_service.delete(id, req.user._id);
       return success_response(res, {
         status: 200,
         message: "Admin deleted successfully",

@@ -41,6 +41,10 @@ const user_schema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    delete_action: {
+      deleted_at: { type: Date },
+      deleted_by: { type: mongoose.Types.ObjectId, ref: "User" },
+    },
   },
   { timestamps: true }
 );

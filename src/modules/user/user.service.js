@@ -32,15 +32,25 @@ class user_service {
     return data;
   }
 
-  async delete(id) {
-    const data = await User.findByIdAndDelete(id);
+  async delete(id, deleted_by) {
+    const data = await User.findByIdAndUpdate(
+      id,
+      {
+        status: "deleted",
+        delete_action: { deleted_at: new Date(), deleted_by },
+      },
+      { new: true }
+    );
     return data;
   }
 
-  async bulk_delete(ids) {
+  async bulk_delete(ids, deleted_by) {
     const data = await User.updateMany(
       { _id: { $in: ids } },
-      { status: "deleted" }
+      {
+        status: "deleted",
+        delete_action: { deleted_at: new Date(), deleted_by },
+      }
     );
     return data;
   }
