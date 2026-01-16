@@ -4,6 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
+const cookieParser = require("cookie-parser");
 const { error_response, success_response } = require("./utils/response");
 
 //! APP
@@ -15,6 +16,9 @@ app.use(helmet());
 //! BODY PARSER
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+
+//! COOKIE PARSER - GDPR safe, for HttpOnly refresh tokens
+app.use(cookieParser());
 
 //! CORS - Strict production configuration
 const allowed_origins = process.env.CORS_ORIGIN

@@ -34,6 +34,13 @@ const user_schema = new mongoose.Schema(
       enum: ["active", "inactive", "deleted"],
       default: "active",
     },
+    //* GDPR-compliant JWT token management
+    //* token_version is used for token revocation (logout, password change)
+    //* Incrementing this invalidates all previously issued tokens
+    token_version: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
