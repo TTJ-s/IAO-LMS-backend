@@ -20,6 +20,21 @@ const user_schema = new mongoose.Schema(
       send_attempts: { type: Number, default: 0 },
       send_locked_until: { type: Date },
     },
+    //* OAuth provider information
+    oauth_providers: {
+      google: {
+        provider_id: { type: String },
+        connected_at: { type: Date },
+      },
+      microsoft: {
+        provider_id: { type: String },
+        connected_at: { type: Date },
+      },
+    },
+    //* OAuth verification status
+    is_verified: { type: Boolean, default: false },
+    //* Last login timestamp
+    last_login: { type: Date },
     role: {
       type: String,
       enum: ["student", "admin", "teacher"],

@@ -236,6 +236,8 @@ class auth_controller {
           user.otp_tracking.locked_until = new Date(
             Date.now() + 15 * 60 * 1000
           );
+          //* Update last login
+          user.last_login = new Date();
           await user.save();
 
           logger.warn({
