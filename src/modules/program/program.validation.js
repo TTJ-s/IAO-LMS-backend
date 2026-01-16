@@ -4,7 +4,7 @@ exports.create_program_validation = Joi.object({
   name: Joi.string().required(),
   description: Joi.string().required(),
   program_type: Joi.string().required(),
-  year: Joi.string().required(),
+  year: Joi.number().required(),
   city: Joi.string().required(),
   language: Joi.string().required(),
 });
@@ -14,7 +14,7 @@ exports.update_program_validation = Joi.object({
   description: Joi.string(),
   program_type: Joi.string(),
   status: Joi.boolean(),
-  year: Joi.string(),
+  year: Joi.number(),
   city: Joi.string(),
   language: Joi.string(),
 });

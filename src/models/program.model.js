@@ -6,7 +6,7 @@ const program_schema = new mongoose.Schema(
     name: { type: String, trim: true },
     description: { type: String, trim: true },
     program_type: { type: String, trim: true },
-    year: { type: String, trim: true },
+    year: { type: Number, default: 1 },
     city: {
       type: mongoose.Types.ObjectId,
       ref: "City",

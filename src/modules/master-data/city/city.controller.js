@@ -59,13 +59,16 @@ class city_controller {
 
   async get_cities(req, res) {
     try {
-      const { page = 1, limit = 10 } = req.query;
+      const { page = 1, limit = 10, country } = req.query;
       const filters = {};
       const options = {
         page,
         limit,
       };
       const sort = {};
+      if (country) {
+        filters.country = country;
+      }
       const [data, total_count] = await Promise.all([
         city_service.find_all(filters, options, sort),
         city_service.total_count(filters),
