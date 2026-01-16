@@ -4,6 +4,7 @@ const auth_route = require("../modules/auth/auth.routes");
 const role_route = require("../modules/role/role.routes");
 const user_route = require("../modules/user/user.routes");
 const country_route = require("../modules/master-data/country/country.routes");
+const city_route = require("../modules/master-data/city/city.routes");
 const { verify_jwt } = require("../middlewares/auth.middleware");
 
 //* Authentication routes (login, refresh, logout, etc.)
@@ -16,5 +17,6 @@ router.use("/role", role_route);
 router.use("/user", user_route);
 //* Master data management routes
 router.use("/master-data/country", country_route);
+router.use("/master-data/city", city_route);
 
 module.exports = router;
