@@ -7,6 +7,7 @@ const counter_schema = new mongoose.Schema(
       required: true,
     },
     admin_sequence_value: { type: Number, default: 0 },
+    program_sequence_value: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

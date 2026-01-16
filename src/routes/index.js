@@ -6,6 +6,7 @@ const user_route = require("../modules/user/user.routes");
 const country_route = require("../modules/master-data/country/country.routes");
 const city_route = require("../modules/master-data/city/city.routes");
 const language_route = require("../modules/master-data/language/language.routes");
+const program_route = require("../modules/program/program.routes");
 const { verify_jwt } = require("../middlewares/auth.middleware");
 
 //* Authentication routes (login, refresh, logout, etc.)
@@ -20,5 +21,7 @@ router.use("/user", user_route);
 router.use("/master-data/country", country_route);
 router.use("/master-data/city", city_route);
 router.use("/master-data/language", language_route);
+//* Program management routes
+router.use("/program", program_route);
 
 module.exports = router;
