@@ -3,8 +3,11 @@ const auth_controller = require("./auth.controller");
 const { verify_jwt } = require("../../middlewares/auth.middleware");
 const router = express.Router();
 
-//* OTP-based authentication
+//* OTP-based authentication for admin
 router.post("/send-otp", auth_controller.send_otp);
+
+//* OTP-based authentication/account creation for student
+router.post("/student/send-otp", auth_controller.student_send_otp);
 
 //* Login after OTP verification - Get access token + refresh cookie
 router.post("/verify-otp", auth_controller.verify_otp);

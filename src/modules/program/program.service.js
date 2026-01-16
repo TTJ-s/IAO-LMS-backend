@@ -30,7 +30,15 @@ class program_service {
   }
 
   async find_by_id(id) {
-    const data = await Program.findById(id);
+    const data = await Program.findById(id)
+      .populate("language")
+      .populate("city")
+      .populate({
+        path: "city",
+        populate: {
+          path: "country",
+        },
+      });
     return data;
   }
 

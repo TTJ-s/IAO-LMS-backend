@@ -150,6 +150,42 @@ class program_controller {
     }
   }
 
+  async get_program(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Program ID is required",
+        });
+      }
+      const data = await program_service.find_by_id(id);
+      if (!data) {
+        return error_response(res, {
+          status: 404,
+          message: "Program not found",
+        });
+      }
+      return success_response(res, {
+        status: 200,
+        message: "Program fetched successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "program.controller.get_program",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
   async delete_program(req, res) {
     try {
       const { id } = req.params;

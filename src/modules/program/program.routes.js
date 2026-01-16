@@ -9,6 +9,7 @@ router
 
 router
   .route("/:id")
+  .get(program_controller.get_program)
   .patch(program_controller.duplicate_program)
   .put(program_controller.update_program)
   .delete(program_controller.delete_program);

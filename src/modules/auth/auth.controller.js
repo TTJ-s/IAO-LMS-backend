@@ -99,6 +99,88 @@ class auth_controller {
     }
   }
 
+  async student_send_otp(req, res) {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return error_response(res, {
+          status: 400,
+          message: "Email is required",
+        });
+      }
+      let user = await auth_service.find_by_email(email);
+      if (!user) {
+        const payload = {
+          email,
+          role: "student",
+        };
+        user = await auth_service.create_user(payload);
+      }
+      //* Check if user is locked out from sending OTP
+      if (
+        user.otp_tracking?.send_locked_until &&
+        user.otp_tracking.send_locked_until > Date.now()
+      ) {
+        const remaining_seconds = Math.ceil(
+          (user.otp_tracking.send_locked_until - Date.now()) / 1000
+        );
+
+        logger.warn({
+          context: "auth.controller.send_otp",
+          message: `Too many OTP send attempts. Try again in ${remaining_seconds} seconds`,
+        });
+
+        return error_response(res, {
+          status: 400,
+          message: `Too many OTP send attempts. Try again in ${remaining_seconds} seconds`,
+        });
+      }
+
+      //* Reset OTP related fields for new request
+      if (!user.otp_tracking) {
+        user.otp_tracking = {};
+      }
+      user.otp_tracking.failed_attempts = 0;
+      user.otp_tracking.locked_until = null;
+
+      //TODO: change after development
+      //const otp = generate_OTP(6);
+      const otp = "123456";
+      user.otp = otp;
+      user.otp_tracking.created_at = new Date();
+      await auth_service.add_otp(user._id, otp);
+      //TODO: send OTP via email
+
+      //* Update OTP send attempt tracking
+      user.otp_tracking.send_attempts =
+        (user.otp_tracking.send_attempts || 0) + 1;
+      if (user.otp_tracking.send_attempts > 5) {
+        //* Lock user for 15 minutes after 5 OTP send attempts
+        user.otp_tracking.send_locked_until = new Date(
+          Date.now() + 15 * 60 * 1000
+        );
+      }
+      await user.save();
+
+      return success_response(res, {
+        status: 200,
+        message: "OTP sent successfully",
+      });
+    } catch (error) {
+      logger.error({
+        context: "auth.controller.send_otp",
+        message: error.message,
+        stack: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
   //* Cookies:
   //* - refreshToken: HttpOnly, Secure, SameSite (7 days)
   async verify_otp(req, res) {
