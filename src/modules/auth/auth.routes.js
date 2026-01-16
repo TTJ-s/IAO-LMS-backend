@@ -2,16 +2,28 @@ const express = require("express");
 const auth_controller = require("./auth.controller");
 const oauth_controller = require("./oauth.controller");
 const { verify_jwt } = require("../../middlewares/auth.middleware");
+const {
+  rate_limit,
+  PRESETS,
+} = require("../../middlewares/ratelimit.middleware");
 const router = express.Router();
 
-//* OTP-based authentication for admin
-router.post("/send-otp", auth_controller.send_otp);
+//* OTP-based authentication for admin - 3 requests per 5 minutes
+router.post("/send-otp", rate_limit(PRESETS.otp), auth_controller.send_otp);
 
-//* OTP-based authentication/account creation for student
-router.post("/student/send-otp", auth_controller.student_send_otp);
+//* OTP-based authentication/account creation for student - 3 requests per 5 minutes
+router.post(
+  "/student/send-otp",
+  rate_limit(PRESETS.otp),
+  auth_controller.student_send_otp
+);
 
-//* Login after OTP verification - Get access token + refresh cookie
-router.post("/verify-otp", auth_controller.verify_otp);
+//* Login after OTP verification - 5 requests per 15 minutes
+router.post(
+  "/verify-otp",
+  rate_limit(PRESETS.auth),
+  auth_controller.verify_otp
+);
 
 //* Cookie (HttpOnly, Secure, SameSite) is sent automatically by browser
 router.post("/refresh", auth_controller.refresh_token);
@@ -22,10 +34,18 @@ router.post("/logout", verify_jwt, auth_controller.logout);
 //* Get current authenticated user info
 router.get("/me", verify_jwt, auth_controller.get_current_user);
 
-//* Google OAuth login
-router.post("/google", oauth_controller.google_callback);
+//* Google OAuth login - 10 requests per 10 minutes
+router.post(
+  "/google",
+  rate_limit(PRESETS.oauth),
+  oauth_controller.google_callback
+);
 
-//* Microsoft OAuth login
-router.post("/microsoft", oauth_controller.microsoft_callback);
+//* Microsoft OAuth login - 10 requests per 10 minutes
+router.post(
+  "/microsoft",
+  rate_limit(PRESETS.oauth),
+  oauth_controller.microsoft_callback
+);
 
 module.exports = router;
