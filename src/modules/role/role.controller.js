@@ -1,6 +1,7 @@
 const { error_response, success_response } = require("../../utils/response");
 const validation = require("./role.validation");
 const role_service = require("./role.service");
+const logger = require("../../utils/logger");
 
 class role_controller {
   async create_role(req, res) {
@@ -9,6 +10,12 @@ class role_controller {
         req.body
       );
       if (error) {
+        logger.warn({
+          context: "role.controller.create_role",
+          message: error.details[0].message,
+          errors: error.details,
+        });
+
         return error_response(res, {
           status: 400,
           message: error.details[0].message,
@@ -22,6 +29,12 @@ class role_controller {
         data,
       });
     } catch (error) {
+      logger.error({
+        context: "role.controller.create_role",
+        message: error.message,
+        errors: error.stack,
+      });
+
       return error_response(res, {
         status: 500,
         message: error.message,
@@ -50,6 +63,12 @@ class role_controller {
         total_count,
       });
     } catch (error) {
+      logger.error({
+        context: "role.controller.get_roles",
+        message: error.message,
+        errors: error.stack,
+      });
+
       return error_response(res, {
         status: 500,
         message: error.message,
@@ -71,6 +90,12 @@ class role_controller {
         req.body
       );
       if (error) {
+        logger.warn({
+          context: "role.controller.update_role",
+          message: error.details[0].message,
+          errors: error.details,
+        });
+
         return error_response(res, {
           status: 400,
           message: error.details[0].message,
@@ -84,6 +109,12 @@ class role_controller {
         data,
       });
     } catch (error) {
+      logger.error({
+        context: "role.controller.update_role",
+        message: error.message,
+        errors: error.stack,
+      });
+
       return error_response(res, {
         status: 500,
         message: error.message,
@@ -104,6 +135,10 @@ class role_controller {
       const existing_admin_role_access =
         await role_service.find_admin_role_access(id);
       if (existing_admin_role_access.length) {
+        logger.warn({
+          context: "role.controller.delete_role",
+          message: "Cannot delete, Role Access associated with admin",
+        });
         return error_response(res, {
           status: 400,
           message: "Cannot delete, Role Access associated with admin",
@@ -116,6 +151,12 @@ class role_controller {
         data,
       });
     } catch (error) {
+      logger.error({
+        context: "role.controller.delete_role",
+        message: error.message,
+        errors: error.stack,
+      });
+
       return error_response(res, {
         status: 500,
         message: error.message,
@@ -140,6 +181,12 @@ class role_controller {
         data,
       });
     } catch (error) {
+      logger.error({
+        context: "role.controller.bulk_delete_roles",
+        message: error.message,
+        errors: error.stack,
+      });
+
       return error_response(res, {
         status: 500,
         message: error.message,

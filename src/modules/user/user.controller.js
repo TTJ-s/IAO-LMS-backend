@@ -1,4 +1,5 @@
 const { generate_counter } = require("../../utils/generate_counter");
+const logger = require("../../utils/logger");
 const { mask_user_contact } = require("../../utils/mask.util");
 const { error_response, success_response } = require("../../utils/response");
 const user_service = require("./user.service");
@@ -11,6 +12,12 @@ class user_controller {
         req.body
       );
       if (error) {
+        logger.warn({
+          context: "user.controller.create_admin",
+          message: error.details[0].message,
+          errors: error.details,
+        });
+
         return error_response(res, {
           status: 400,
           message: error.details[0].message,
@@ -23,6 +30,11 @@ class user_controller {
         value.phone
       );
       if (find_existing_admin) {
+        logger.warn({
+          context: "user.controller.create_admin",
+          message: "Admin with this email or phone already exists",
+        });
+
         return error_response(res, {
           status: 400,
           message: "Admin with this email or phone already exists",
@@ -50,6 +62,12 @@ class user_controller {
         data: user_obj,
       });
     } catch (error) {
+      logger.error({
+        context: "user.controller.create_admin",
+        message: error.message,
+        errors: error.stack,
+      });
+
       return error_response(res, {
         status: 500,
         message: error.message,
@@ -90,6 +108,12 @@ class user_controller {
         total_count,
       });
     } catch (error) {
+      logger.error({
+        context: "user.controller.get_admins",
+        message: error.message,
+        errors: error.stack,
+      });
+
       return error_response(res, {
         status: 500,
         message: error.message,
@@ -109,6 +133,11 @@ class user_controller {
       }
       const { status } = req.body;
       if (!["active", "inactive"].includes(status)) {
+        logger.warn({
+          context: "user.controller.update_status",
+          message: "Invalid status",
+        });
+
         return error_response(res, {
           status: 400,
           message: "Invalid status",
@@ -130,6 +159,12 @@ class user_controller {
         user_obj,
       });
     } catch (error) {
+      logger.error({
+        context: "user.controller.update_status",
+        message: error.message,
+        errors: error.stack,
+      });
+
       return error_response(res, {
         status: 500,
         message: error.message,
@@ -154,6 +189,12 @@ class user_controller {
         data,
       });
     } catch (error) {
+      logger.error({
+        context: "user.controller.bulk_delete_admins",
+        message: error.message,
+        errors: error.stack,
+      });
+
       return error_response(res, {
         status: 500,
         message: error.message,
@@ -178,6 +219,12 @@ class user_controller {
         data,
       });
     } catch (error) {
+      logger.error({
+        context: "user.controller.delete_admin",
+        message: error.message,
+        errors: error.stack,
+      });
+
       return error_response(res, {
         status: 500,
         message: error.message,
