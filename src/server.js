@@ -23,6 +23,10 @@ function validate_env() {
     "CORS_ORIGIN",
     "API_KEY",
     "API_VERSION",
+    "JWT_ACCESS_SECRET",
+    "JWT_REFRESH_SECRET",
+    "JWT_ACCESS_EXPIRES_IN",
+    "JWT_REFRESH_EXPIRES_IN",
   ];
   const missing = required.filter((key) => !process.env[key]);
 
