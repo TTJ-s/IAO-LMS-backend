@@ -7,7 +7,7 @@ const { generate_counter } = require("../../utils/generate_counter");
 class program_controller {
   async create(req, res) {
     try {
-      const { error, value } = validation.create_role_validation.validate(
+      const { error, value } = validation.create_program_validation.validate(
         req.body
       );
       if (error) {
