@@ -24,7 +24,11 @@ class city_service {
   async find_all(filters = {}, options = {}, sort = {}) {
     const { page = 1, limit = 10 } = options;
     const skip = (page - 1) * limit;
-    const data = await City.find(filters).skip(skip).limit(limit).sort(sort);
+    const data = await City.find(filters)
+      .populate("country", "code name")
+      .skip(skip)
+      .limit(limit)
+      .sort(sort);
     return data;
   }
 
