@@ -2,77 +2,149 @@ const axios = require("axios");
 const { User } = require("../../models");
 const logger = require("../../utils/logger");
 const auth_service = require("./auth.service");
+const {
+  cache_token,
+  get_cached_token,
+  retry_async,
+} = require("./oauth.cache");
 
 class oauth_service {
-  //* Verify Google token and extract user info
+  //* Verify Google token and extract user info with caching and retry logic
   async verify_google_token(token) {
     try {
-      const response = await axios.get(
-        `https://www.googleapis.com/oauth2/v2/userinfo`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      //* Check cache first
+      const cached_data = get_cached_token(token, "google");
+      if (cached_data) {
+        logger.info({
+          context: "oauth.service.verify_google_token",
+          message: "Google token verified from cache",
+          email: cached_data.email,
+        });
+        return cached_data;
+      }
+
+      //* Fetch from Google API with retry logic
+      const response = await retry_async(
+        async () => {
+          return await axios.get(
+            `https://www.googleapis.com/oauth2/v2/userinfo`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              timeout: 5000, //* 5 second timeout
+            }
+          );
+        },
+        { max_retries: 3 }
       );
 
       const { email, name, picture, id } = response.data;
 
-      logger.info({
-        context: "oauth.service.verify_google_token",
-        message: "Google token verified successfully",
-        email,
-      });
-
-      return {
+      const oauth_data = {
         email,
         name,
         picture,
         provider: "google",
         provider_id: id,
       };
+
+      //* Cache the result
+      cache_token(token, "google", oauth_data);
+
+      logger.info({
+        context: "oauth.service.verify_google_token",
+        message: "Google token verified and cached",
+        email,
+      });
+
+      return oauth_data;
     } catch (error) {
       logger.error({
         context: "oauth.service.verify_google_token",
         message: "Failed to verify Google token",
         error: error.message,
+        status: error.response?.status,
       });
 
-      throw new Error("Invalid Google token");
+      //* Return meaningful error based on status code
+      if (error.response?.status === 401) {
+        throw new Error("Invalid or expired Google token");
+      } else if (error.response?.status === 403) {
+        throw new Error("Google token access denied");
+      } else {
+        throw new Error(
+          "Failed to verify Google token. Please try again later."
+        );
+      }
     }
   }
 
-  //* Verify Microsoft token and extract user info
+  //* Verify Microsoft token and extract user info with caching and retry logic
   async verify_microsoft_token(token) {
     try {
-      const response = await axios.get(`https://graph.microsoft.com/v1.0/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      //* Check cache first
+      const cached_data = get_cached_token(token, "microsoft");
+      if (cached_data) {
+        logger.info({
+          context: "oauth.service.verify_microsoft_token",
+          message: "Microsoft token verified from cache",
+          email: cached_data.email,
+        });
+        return cached_data;
+      }
 
-      const { mail, id, userPrincipalName } = response.data;
+      //* Fetch from Microsoft Graph API with retry logic
+      const response = await retry_async(
+        async () => {
+          return await axios.get(`https://graph.microsoft.com/v1.0/me`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            timeout: 5000, //* 5 second timeout
+          });
+        },
+        { max_retries: 3 }
+      );
+
+      const { mail, id, displayName, userPrincipalName } = response.data;
       const email = mail || userPrincipalName;
 
-      logger.info({
-        context: "oauth.service.verify_microsoft_token",
-        message: "Microsoft token verified successfully",
+      const oauth_data = {
         email,
-      });
-
-      return {
-        email,
+        name: displayName,
         provider: "microsoft",
         provider_id: id,
       };
+
+      //* Cache the result
+      cache_token(token, "microsoft", oauth_data);
+
+      logger.info({
+        context: "oauth.service.verify_microsoft_token",
+        message: "Microsoft token verified and cached",
+        email,
+      });
+
+      return oauth_data;
     } catch (error) {
       logger.error({
         context: "oauth.service.verify_microsoft_token",
         message: "Failed to verify Microsoft token",
         error: error.message,
+        status: error.response?.status,
       });
 
-      throw new Error("Invalid Microsoft token");
+      //* Return meaningful error based on status code
+      if (error.response?.status === 401) {
+        throw new Error("Invalid or expired Microsoft token");
+      } else if (error.response?.status === 403) {
+        throw new Error("Microsoft token access denied");
+      } else {
+        throw new Error(
+          "Failed to verify Microsoft token. Please try again later."
+        );
+      }
     }
   }
 
