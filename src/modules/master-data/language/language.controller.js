@@ -1,17 +1,17 @@
-const validation = require("./city.validation");
-const city_service = require("./city.service");
+const validation = require("./language.validation");
+const language_service = require("./language.service");
 const logger = require("../../../utils/logger");
 const { error_response, success_response } = require("../../../utils/response");
 
-class city_controller {
-  async create_city(req, res) {
+class language_controller {
+  async create(req, res) {
     try {
-      const { error, value } = validation.create_city_validation.validate(
+      const { error, value } = validation.create_language_validation.validate(
         req.body
       );
       if (error) {
         logger.warn({
-          context: "city.controller.create_city",
+          context: "language.controller.create",
           message: error.details[0].message,
           errors: error.details,
         });
@@ -23,28 +23,30 @@ class city_controller {
         });
       }
 
-      const existing_city = await city_service.find_by_name(value.city_name);
-      if (existing_city) {
+      const existing_language = await language_service.find_by_name(
+        value.language_name
+      );
+      if (existing_language) {
         logger.warn({
-          context: "city.controller.create_city",
-          message: "City already exists",
+          context: "language.controller.create",
+          message: "Language already exists",
         });
 
         return error_response(res, {
           status: 400,
-          message: "City already exists",
+          message: "Language already exists",
         });
       }
 
-      const data = await city_service.create(value);
+      const data = await language_service.create(value);
       return success_response(res, {
         status: 201,
-        message: "City created successfully",
+        message: "Language created successfully",
         data,
       });
     } catch (error) {
       logger.error({
-        context: "city.controller.create_city",
+        context: "language.controller.create",
         message: error.message,
         errors: error.stack,
       });
@@ -57,7 +59,7 @@ class city_controller {
     }
   }
 
-  async get_cities(req, res) {
+  async get_languages(req, res) {
     try {
       const { page = 1, limit = 10 } = req.query;
       const filters = {};
@@ -67,18 +69,18 @@ class city_controller {
       };
       const sort = {};
       const [data, total_count] = await Promise.all([
-        city_service.find_all(filters, options, sort),
-        city_service.total_count(filters),
+        language_service.find_all(filters, options, sort),
+        language_service.total_count(filters),
       ]);
       return success_response(res, {
         status: 200,
-        message: "Cities fetched successfully",
+        message: "Languages fetched successfully",
         data,
         total_count,
       });
     } catch (error) {
       logger.error({
-        context: "city.controller.get_cities",
+        context: "language.controller.get_languages",
         message: error.message,
         errors: error.stack,
       });
@@ -91,24 +93,24 @@ class city_controller {
     }
   }
 
-  async delete_city(req, res) {
+  async delete_language(req, res) {
     try {
       const { id } = req.params;
       if (!id) {
         return error_response(res, {
           status: 400,
-          message: "City ID is required",
+          message: "Language ID is required",
         });
       }
-      const data = await city_service.delete(id);
+      const data = await language_service.delete(id);
       return success_response(res, {
         status: 200,
-        message: "City deleted successfully",
+        message: "Language deleted successfully",
         data,
       });
     } catch (error) {
       logger.error({
-        context: "city.controller.delete_city",
+        context: "language.controller.delete_language",
         message: error.message,
         errors: error.stack,
       });
@@ -121,21 +123,21 @@ class city_controller {
     }
   }
 
-  async update_city(req, res) {
+  async update_language(req, res) {
     try {
       const { id } = req.params;
       if (!id) {
         return error_response(res, {
           status: 400,
-          message: "City ID is required",
+          message: "Language ID is required",
         });
       }
-      const { error, value } = validation.update_city_validation.validate(
+      const { error, value } = validation.update_language_validation.validate(
         req.body
       );
       if (error) {
         logger.warn({
-          context: "city.controller.update_city",
+          context: "language.controller.update_language",
           message: error.details[0].message,
           errors: error.details,
         });
@@ -146,27 +148,27 @@ class city_controller {
           errors: error.details,
         });
       }
-      const existing_city = await city_service.find_by_id(id);
-      if (!existing_city) {
+      const existing_language = await language_service.find_by_id(id);
+      if (!existing_language) {
         logger.warn({
-          context: "city.controller.update_city",
-          message: "City not found",
+          context: "language.controller.update_language",
+          message: "Language not found",
         });
 
         return error_response(res, {
-          status: 404,
-          message: "City not found",
+          status: 400,
+          message: "Language not found",
         });
       }
-      const data = await city_service.update(id, value);
+      const data = await language_service.update(id, value);
       return success_response(res, {
         status: 200,
-        message: "City updated successfully",
+        message: "Language updated successfully",
         data,
       });
     } catch (error) {
       logger.error({
-        context: "city.controller.update_city",
+        context: "language.controller.update_language",
         message: error.message,
         errors: error.stack,
       });
@@ -180,4 +182,4 @@ class city_controller {
   }
 }
 
-module.exports = new city_controller();
+module.exports = new language_controller();
