@@ -1,6 +1,7 @@
 const City = require("./city.model");
 const Counter = require("./counter.model");
 const Country = require("./country.model");
+const Intake = require("./intake.model");
 const Language = require("./language.model");
 const Program = require("./program.model");
 const Role = require("./role.model");
@@ -14,4 +15,5 @@ module.exports = {
   City,
   Language,
   Program,
+  Intake,
 };
