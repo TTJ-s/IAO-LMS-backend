@@ -240,7 +240,7 @@ class auth_controller {
         message: "Login successful",
         data: {
           user: {
-            id: user._id,
+            _id: user._id,
             role: user.role,
             status: user.status,
           },
@@ -365,6 +365,11 @@ class auth_controller {
         status: 200,
         message: "Token refreshed",
         data: {
+          user: {
+            _id: user._id,
+            role: user.role,
+            status: user.status,
+          },
           access_token: new_access_token,
           access_token_expires_in: access_expires_in,
         },
