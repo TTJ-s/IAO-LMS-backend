@@ -60,9 +60,16 @@ class country_controller {
 
   async get_countries(req, res) {
     try {
+      const { page = 1, limit = 10 } = req.query;
+      const filters = {};
+      const options = {
+        page,
+        limit,
+      };
+      const sort = {};
       const [data, total_count] = await Promise.all([
-        country_service.find_all(),
-        country_service.total_count(),
+        country_service.find_all(filters, options, sort),
+        country_service.total_count(filters),
       ]);
       return success_response(res, {
         status: 200,
