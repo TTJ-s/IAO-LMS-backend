@@ -41,6 +41,11 @@ class city_service {
     );
     return data;
   }
+
+  async total_count(filters = {}) {
+    const data = await City.countDocuments(filters);
+    return data;
+  }
 }
 
 module.exports = new city_service();
