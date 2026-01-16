@@ -19,7 +19,11 @@ class role_service {
   }
 
   async delete(id) {
-    const data = await Role.findByIdAndDelete(id);
+    const data = await Role.findByIdAndUpdate(
+      id,
+      { status: false },
+      { new: true }
+    );
     return data;
   }
 
