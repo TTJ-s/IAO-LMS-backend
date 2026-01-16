@@ -9,7 +9,10 @@ const language_route = require("../modules/master-data/language/language.routes"
 const program_route = require("../modules/program/program.routes");
 const intake_route = require("../modules/intake/intake.routes");
 const { verify_jwt } = require("../middlewares/auth.middleware");
+const { validate_api_key } = require("../middlewares/apikey.middleware");
 
+//* Validate API key
+router.use(validate_api_key);
 //* Authentication routes (login, refresh, logout, etc.)
 router.use("/auth", auth_route);
 //* Requires: Authorization header with valid access token
