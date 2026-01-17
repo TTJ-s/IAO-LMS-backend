@@ -1,15 +1,20 @@
 const express = require("express");
 const language_controller = require("./language.controller");
+const {
+  rate_limit,
+  PRESETS,
+} = require("../../../middlewares/ratelimit.middleware");
+
 const router = express.Router();
 
 router
   .route("/")
-  .post(language_controller.create)
-  .get(language_controller.get_languages);
+  .post(rate_limit(PRESETS.api), language_controller.create)
+  .get(rate_limit(PRESETS.public), language_controller.get_languages);
 
 router
   .route("/:id")
-  .put(language_controller.update_language)
-  .delete(language_controller.delete_language);
+  .put(rate_limit(PRESETS.api), language_controller.update_language)
+  .delete(rate_limit(PRESETS.api), language_controller.delete_language);
 
 module.exports = router;

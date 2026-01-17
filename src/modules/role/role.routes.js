@@ -1,15 +1,19 @@
 const express = require("express");
 const role_controller = require("./role.controller");
+const {
+  rate_limit,
+  PRESETS,
+} = require("../../middlewares/ratelimit.middleware");
 const router = express.Router();
 
 router
   .route("/")
-  .post(role_controller.create_role)
-  .get(role_controller.get_roles);
+  .post(rate_limit(PRESETS.api), role_controller.create_role)
+  .get(rate_limit(PRESETS.public), role_controller.get_roles);
 
 router
   .route("/:id")
-  .put(role_controller.update_role)
-  .delete(role_controller.delete_role);
+  .put(rate_limit(PRESETS.api), role_controller.update_role)
+  .delete(rate_limit(PRESETS.api), role_controller.delete_role);
 
 module.exports = router;
