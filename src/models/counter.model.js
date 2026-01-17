@@ -8,6 +8,8 @@ const counter_schema = new mongoose.Schema(
     },
     admin_sequence_value: { type: Number, default: 0 },
     program_sequence_value: { type: Number, default: 0 },
+    intake_sequence_value: { type: Number, default: 0 },
+    application_sequence_value: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

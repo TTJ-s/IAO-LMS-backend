@@ -3,6 +3,7 @@ const validation = require("./intake.validation");
 const intake_service = require("./intake.service");
 const logger = require("../../utils/logger");
 const { error_response, success_response } = require("../../utils/response");
+const { generate_counter } = require("../../utils/generate_counter");
 
 class intake_controller {
   async create_intake(req, res) {
@@ -48,7 +49,10 @@ class intake_controller {
           .endOf("day")
           .toDate();
       }
-
+      const counter = await generate_counter("intake");
+      const padded_counter = String(counter).padStart(2, "0");
+      const uid = `IN-${padded_counter}`;
+      value.uid = uid;
       const data = await intake_service.create(value);
       return success_response(res, {
         status: 200,
