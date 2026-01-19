@@ -235,19 +235,21 @@ class auth_service {
 
       if (user.role === "student") {
         const application = await this.find_my_application(user._id);
-        
+
         if (user.previous_education) {
           user_info.current_step = 1;
         } else {
           user_info.current_step = 0;
         }
-        
+
         if (application) {
-          user_info.is_application_submitted = true;
           if (application.id_card?.url) {
             user_info.current_step = 2;
           } else {
             user_info.current_step = 1;
+          }
+          if (application.payment_status === "paid") {
+            user_info.is_application_submitted = true;
           }
         } else {
           user_info.is_application_submitted = false;
