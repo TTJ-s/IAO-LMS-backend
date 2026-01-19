@@ -468,15 +468,36 @@ class auth_controller {
         user_id,
       });
 
+      const user_info = {
+        _id: user._id,
+        role: user.role,
+        status: user.status,
+      };
+
+      if (user.role === "student") {
+        const application = await auth_service.find_my_application(user._id);
+        if (user.previous_education) {
+          user_info.current_step = 1;
+        } else {
+          user_info.current_step = 0;
+        }
+        if (application) {
+          user_info.is_application_submitted = true;
+          if (application.id_card?.url) {
+            user_info.current_step = 2;
+          } else {
+            user_info.current_step = 1;
+          }
+        } else {
+          user_info.is_application_submitted = false;
+        }
+      }
+
       return success_response(res, {
         status: 200,
         message: "Token refreshed",
         data: {
-          user: {
-            _id: user._id,
-            role: user.role,
-            status: user.status,
-          },
+          user: user_info,
           access_token: new_access_token,
           access_token_expires_in: access_expires_in,
         },
