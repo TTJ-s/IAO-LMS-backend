@@ -392,7 +392,7 @@ class auth_controller {
       //* 1. Still exists and active
       //* 2. token_version matches (not revoked)
       const user = await User.findById(user_id).select(
-        "_id role status token_version",
+        "_id role status token_version previous_education",
       );
 
       if (!user || user.status !== "active") {
