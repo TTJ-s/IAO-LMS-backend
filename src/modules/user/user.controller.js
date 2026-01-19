@@ -9,7 +9,7 @@ class user_controller {
   async create_admin(req, res) {
     try {
       const { error, value } = validation.create_admin_validation.validate(
-        req.body
+        req.body,
       );
       if (error) {
         logger.warn({
@@ -27,7 +27,7 @@ class user_controller {
 
       const find_existing_admin = await user_service.find_by_email_or_phone(
         value.email,
-        value.phone
+        value.phone,
       );
       if (find_existing_admin) {
         logger.warn({
@@ -224,6 +224,45 @@ class user_controller {
     } catch (error) {
       logger.error({
         context: "user.controller.delete_admin",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async update_profile(req, res) {
+    try {
+      const { error, value } = validation.update_profile_validation.validate(
+        req.body,
+      );
+      if (error) {
+        logger.warn({
+          context: "user.controller.update_profile",
+          message: error.details[0].message,
+          errors: error.details,
+        });
+
+        return error_response(res, {
+          status: 400,
+          message: error.details[0].message,
+          errors: error.details,
+        });
+      }
+      const data = await user_service.update(req.user._id, value);
+      return success_response(res, {
+        status: 200,
+        message: "Profile updated successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "user.controller.update_profile",
         message: error.message,
         errors: error.stack,
       });

@@ -11,16 +11,18 @@ router
   .post(rate_limit(PRESETS.api), user_controller.create_admin)
   .get(rate_limit(PRESETS.public), user_controller.get_admins);
 
+router.put("/profile-update", rate_limit(PRESETS.api), user_controller.update_profile);
+
 router.post(
   "/bulk-delete-admins",
   rate_limit(PRESETS.api),
-  user_controller.bulk_delete_admins
+  user_controller.bulk_delete_admins,
 );
 
 router.patch(
   "/:id/status",
   rate_limit(PRESETS.api),
-  user_controller.update_status
+  user_controller.update_status,
 );
 
 router

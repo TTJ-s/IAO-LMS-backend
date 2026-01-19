@@ -7,3 +7,14 @@ exports.create_admin_validation = Joi.object({
   phone: Joi.string().required(),
   role_access: Joi.string().required(),
 });
+
+exports.update_profile_validation = Joi.object({
+  first_name: Joi.string().required(),
+  last_name: Joi.string().required(),
+  phone: Joi.string().required(),
+  previous_education: Joi.string().required(),
+  address: Joi.string().required(),
+  postal_code: Joi.string().required(),
+  country: Joi.string().required(),
+  city: Joi.string().required(),
+});
