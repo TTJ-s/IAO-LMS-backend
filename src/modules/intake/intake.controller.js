@@ -9,7 +9,7 @@ class intake_controller {
   async create_intake(req, res) {
     try {
       const { error, value } = validation.create_intake_validation.validate(
-        req.body
+        req.body,
       );
       if (error) {
         logger.warn({
@@ -26,7 +26,7 @@ class intake_controller {
       }
 
       const existing_intake = await intake_service.find_by_name(
-        value.intake_name
+        value.intake_name,
       );
       if (existing_intake) {
         logger.warn({
@@ -141,7 +141,7 @@ class intake_controller {
   async update_intake(req, res) {
     try {
       const { error, value } = validation.update_intake_validation.validate(
-        req.body
+        req.body,
       );
       if (error) {
         logger.warn({
@@ -186,6 +186,45 @@ class intake_controller {
     } catch (error) {
       logger.error({
         context: "intake.controller.update_intake",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async get_active_program_by_id(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Intake ID is required",
+        });
+      }
+      const data = await intake_service.find_active_intake_by_program_id(id);
+      const mapped_data = {
+        _id: data._id,
+        name: data.name,
+        program: data.program,
+        start_date: data.start_date,
+        end_date: data.end_date,
+        registration_deadline: data.registration_deadline,
+        status: data.status,
+      };
+      return success_response(res, {
+        status: 200,
+        message: "Intake found successfully",
+        data: mapped_data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "intake.controller.get_active_program_by_id",
         message: error.message,
         errors: error.stack,
       });

@@ -27,6 +27,14 @@ class intake_service {
     return data;
   }
 
+  async find_active_intake_by_program_id(program_id) {
+    const data = await Intake.findOne({
+      program: program_id,
+      status: "open",
+    }).populate("program", "name");
+    return data;
+  }
+
   async update(id, payload) {
     const data = await Intake.findByIdAndUpdate(id, payload, { new: true });
     return data;
@@ -36,7 +44,7 @@ class intake_service {
     const data = await Intake.findByIdAndUpdate(
       id,
       { status: "deleted" },
-      { new: true }
+      { new: true },
     );
     return data;
   }

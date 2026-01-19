@@ -329,20 +329,20 @@ class auth_controller {
 
       if (user.role === "student") {
         const application = await auth_service.find_my_application(user._id);
-        if (application) {
-          user_info.is_application_submitted = true;
-        } else {
-          user_info.is_application_submitted = false;
-        }
         if (user.previous_education) {
           user_info.current_step = 1;
         } else {
           user_info.current_step = 0;
         }
-        if (application.id_card?.url) {
-          user_info.current_step = 2;
+        if (application) {
+          user_info.is_application_submitted = true;
+          if (application.id_card?.url) {
+            user_info.current_step = 2;
+          } else {
+            user_info.current_step = 1;
+          }
         } else {
-          user_info.current_step = 1;
+          user_info.is_application_submitted = false;
         }
       }
 
