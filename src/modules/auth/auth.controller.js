@@ -330,6 +330,11 @@ class auth_controller {
         if (application) {
           user_info.is_application_submitted = true;
         }
+        if (user.previous_education) {
+          user_info.current_step = 1;
+        } else {
+          user_info.current_step = 0;
+        }
       }
 
       return success_response(res, {
