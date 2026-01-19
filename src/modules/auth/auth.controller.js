@@ -321,30 +321,7 @@ class auth_controller {
         user_role: user.role,
       });
 
-      const user_info = {
-        _id: user._id,
-        role: user.role,
-        status: user.status,
-      };
-
-      if (user.role === "student") {
-        const application = await auth_service.find_my_application(user._id);
-        if (user.previous_education) {
-          user_info.current_step = 1;
-        } else {
-          user_info.current_step = 0;
-        }
-        if (application) {
-          user_info.is_application_submitted = true;
-          if (application.id_card?.url) {
-            user_info.current_step = 2;
-          } else {
-            user_info.current_step = 1;
-          }
-        } else {
-          user_info.is_application_submitted = false;
-        }
-      }
+      const user_info = await auth_service.build_user_info(user);
 
       return success_response(res, {
         status: 200,
@@ -468,30 +445,7 @@ class auth_controller {
         user_id,
       });
 
-      const user_info = {
-        _id: user._id,
-        role: user.role,
-        status: user.status,
-      };
-
-      if (user.role === "student") {
-        const application = await auth_service.find_my_application(user._id);
-        if (user.previous_education) {
-          user_info.current_step = 1;
-        } else {
-          user_info.current_step = 0;
-        }
-        if (application) {
-          user_info.is_application_submitted = true;
-          if (application.id_card?.url) {
-            user_info.current_step = 2;
-          } else {
-            user_info.current_step = 1;
-          }
-        } else {
-          user_info.is_application_submitted = false;
-        }
-      }
+      const user_info = await auth_service.build_user_info(user);
 
       return success_response(res, {
         status: 200,

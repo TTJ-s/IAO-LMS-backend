@@ -231,30 +231,7 @@ class oauth_service {
         user_id: user._id,
       });
 
-      const user_info = {
-        _id: user._id,
-        role: user.role,
-        status: user.status,
-      };
-
-      if (user.role === "student") {
-        const application = await auth_service.find_my_application(user._id);
-        if (application) {
-          user_info.is_application_submitted = true;
-        } else {
-          user_info.is_application_submitted = false;
-        }
-        if (user.previous_education) {
-          user_info.current_step = 1;
-        } else {
-          user_info.current_step = 0;
-        }
-        if (application.id_card?.url) {
-          user_info.current_step = 2;
-        } else {
-          user_info.current_step = 1;
-        }
-      }
+      const user_info = await auth_service.build_user_info(user);
 
       return {
         access_token,

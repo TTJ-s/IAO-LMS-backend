@@ -224,6 +224,47 @@ class auth_service {
     const data = await Application.findOne({ user: user_id });
     return data;
   }
+
+  async build_user_info(user) {
+    try {
+      const user_info = {
+        _id: user._id,
+        role: user.role,
+        status: user.status,
+      };
+
+      if (user.role === "student") {
+        const application = await this.find_my_application(user._id);
+        
+        if (user.previous_education) {
+          user_info.current_step = 1;
+        } else {
+          user_info.current_step = 0;
+        }
+        
+        if (application) {
+          user_info.is_application_submitted = true;
+          if (application.id_card?.url) {
+            user_info.current_step = 2;
+          } else {
+            user_info.current_step = 1;
+          }
+        } else {
+          user_info.is_application_submitted = false;
+        }
+      }
+
+      return user_info;
+    } catch (error) {
+      logger.error({
+        context: "auth.service.build_user_info",
+        message: "Error building user info",
+        error: error.message,
+        user_id: user._id,
+      });
+      throw error;
+    }
+  }
 }
 
 module.exports = new auth_service();
