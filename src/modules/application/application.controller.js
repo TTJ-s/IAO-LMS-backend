@@ -174,7 +174,7 @@ class application_controller {
 
   async get_my_application(req, res) {
     try {
-      const data = await application_service.find_by_user(req.user.id);
+      const data = await application_service.find_by_user(req.user._id);
 
       if (!data) {
         return error_response(res, {
