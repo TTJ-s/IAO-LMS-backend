@@ -1,4 +1,4 @@
-const { Application } = require("../../models");
+const { Application, Intake } = require("../../models");
 
 class application_service {
   async create(payload) {
@@ -9,7 +9,7 @@ class application_service {
   async find_by_id(id) {
     const data = await Application.findById(id).populate(
       "intake",
-      "name start_date end_date"
+      "name start_date end_date",
     );
     return data;
   }
@@ -38,6 +38,11 @@ class application_service {
 
   async total_count(filters = {}) {
     const data = await Application.countDocuments(filters);
+    return data;
+  }
+
+  async find_intake_by_id(id) {
+    const data = await Intake.findById(id);
     return data;
   }
 }

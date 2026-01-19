@@ -39,9 +39,22 @@ class application_controller {
         });
       }
       value.decision_date = moment().add(7, "days").toDate();
-      if (value.is_paymentable === false) {
+      const find_intake = await application_service.find_intake_by_id(
+        value.intake,
+      );
+      if (!find_intake) {
+        return error_response(res, {
+          status: 400,
+          message: "Intake not found",
+        });
+      }
+      if (value.is_paymentable === true) {
+        value.payment_status = "pending";
+        value.payment_amount = find_intake.admission_fee;
+      } else {
         value.payment_status = "paid";
       }
+
       const counter = await generate_counter("application");
       const padded_counter = String(counter).padStart(2, "0");
       const uid = `AP-${padded_counter}`;
