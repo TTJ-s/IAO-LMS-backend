@@ -9,9 +9,12 @@ const language_route = require("../modules/master-data/language/language.routes"
 const program_route = require("../modules/program/program.routes");
 const intake_route = require("../modules/intake/intake.routes");
 const application_route = require("../modules/application/application.routes");
+const payment_route = require("../modules/payment/payment.routes");
 const { verify_jwt } = require("../middlewares/auth.middleware");
 const { validate_api_key } = require("../middlewares/apikey.middleware");
 
+//* Payment management routes
+router.use("/payment", payment_route);
 //* Validate API key
 router.use(validate_api_key);
 //* Authentication routes (login, refresh, logout, etc.)

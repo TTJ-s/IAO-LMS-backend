@@ -27,6 +27,9 @@ function validate_env() {
     "JWT_REFRESH_SECRET",
     "JWT_ACCESS_EXPIRES_IN",
     "JWT_REFRESH_EXPIRES_IN",
+    "MOLLIE_API_KEY",
+    "MOLLIE_REDIRECT_URL",
+    "MOLLIE_WEBHOOK_URL",
   ];
   const missing = required.filter((key) => !process.env[key]);
 
@@ -44,7 +47,7 @@ async function start_server() {
 
     server.listen(PORT, () => {
       logger.info(
-        `🚀 LMS Backend running on port ${PORT} [${process.env.NODE_ENV}]`
+        `🚀 LMS Backend running on port ${PORT} [${process.env.NODE_ENV}]`,
       );
     });
   } catch (error) {

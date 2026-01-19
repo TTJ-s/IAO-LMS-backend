@@ -11,6 +11,7 @@ const counter_schema = new mongoose.Schema(
     intake_sequence_value: { type: Number, default: 0 },
     application_sequence_value: { type: Number, default: 0 },
     batch_sequence_value: { type: Number, default: 0 },
+    payment_sequence_value: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
