@@ -25,7 +25,10 @@ class application_service {
   }
 
   async find_by_user(user) {
-    const data = await Application.findOne({ user });
+    const data = await Application.findOne({ user }).populate(
+      "user",
+      "first_name last_name phone email previous_education address postal_code country city",
+    );
     return data;
   }
 
