@@ -6,13 +6,14 @@ const batch_schema = new mongoose.Schema(
     name: { type: String, trim: true },
     student_count: { type: Number, default: 0 },
     intake: { type: mongoose.Types.ObjectId, ref: "Intake" },
+    is_full_filled: { type: Boolean, default: false },
     status: {
       type: String,
       enum: ["open", "closed"],
       default: "open",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 batch_schema.index({ name: 1 });

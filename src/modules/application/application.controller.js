@@ -253,7 +253,7 @@ class application_controller {
       const existing_application = await application_service.find_by_id(id);
       if (!existing_application) {
         logger.warn({
-          context: "application.controller.update_application",
+          context: "application.controller.update_application_status",
           message: "Application not found",
         });
 
@@ -262,19 +262,29 @@ class application_controller {
           message: "Application not found",
         });
       }
+
+      //* Handle batch assignment and intake clearing when application is approved and payment is done
       if (
         value.status === "approved" &&
         existing_application.payment_status === "paid"
       ) {
-        const find_existing_batch = await batch_service.find_batch_by_intake(
+        const { batch_id } = await batch_service.assign_or_create_batch(
           existing_application.intake,
+          id,
         );
-        if (find_existing_batch.length === 0) {
-          //TODO: create batch for this intake
-        } else {
-          //TODO: assign student to batch
-        }
+
+        //* Update application status, assign batch, and clear intake
+        value.batch = batch_id;
+        value.intake = null;
+
+        logger.debug({
+          context: "application.controller.update_application_status",
+          message: "Application will be updated with batch and intake cleared",
+          application_id: id,
+          batch_id,
+        });
       }
+
       const data = await application_service.update(id, value);
       return success_response(res, {
         status: 200,
