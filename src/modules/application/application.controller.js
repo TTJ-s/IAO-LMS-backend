@@ -140,13 +140,16 @@ class application_controller {
 
   async get_applications(req, res) {
     try {
-      const { page = 1, limit = 10 } = req.query;
+      const { page = 1, limit = 10, status } = req.query;
       const filters = {};
       const options = {
         page,
         limit,
       };
       const sort = {};
+      if (status) {
+        filters.status = status;
+      }
       const [data, total_count] = await Promise.all([
         application_service.find_all(filters, options, sort),
         application_service.total_count(filters),
