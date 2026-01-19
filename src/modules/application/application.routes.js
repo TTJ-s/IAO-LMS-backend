@@ -11,7 +11,7 @@ router
   .post(rate_limit(PRESETS.api), application_controller.create_application)
   .get(rate_limit(PRESETS.public), application_controller.get_applications);
 
-router.get("/my-applications", application_controller.get_my_applications);
+router.get("/my-application", application_controller.get_my_application);
 
 router
   .route("/:id")

@@ -2,6 +2,7 @@ const { success_response, error_response } = require("../../utils/response");
 const auth_service = require("./auth.service");
 const logger = require("../../utils/logger");
 const { User } = require("../../models");
+const { mask_user_contact } = require("../../utils/mask.util");
 
 //* Cookie configuration for GDPR compliance
 const get_cookie_options = () => ({
@@ -302,6 +303,7 @@ class auth_controller {
         send_attempts: 0,
         send_locked_until: null,
       };
+      user.last_login = new Date();
       await user.save();
 
       //* Set refresh token in HttpOnly cookie (secure, GDPR-compliant)
@@ -329,11 +331,18 @@ class auth_controller {
         const application = await auth_service.find_my_application(user._id);
         if (application) {
           user_info.is_application_submitted = true;
+        } else {
+          user_info.is_application_submitted = false;
         }
         if (user.previous_education) {
           user_info.current_step = 1;
         } else {
           user_info.current_step = 0;
+        }
+        if (application.id_card?.url) {
+          user_info.current_step = 2;
+        } else {
+          user_info.current_step = 1;
         }
       }
 
@@ -578,6 +587,7 @@ class auth_controller {
           role: user.role,
           role_access: user.role_access,
           status: user.status,
+          ...mask_user_contact(user),
         },
       });
     } catch (error) {

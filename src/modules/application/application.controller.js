@@ -45,6 +45,7 @@ class application_controller {
       const counter = await generate_counter("application");
       const padded_counter = String(counter).padStart(2, "0");
       const uid = `AP-${padded_counter}`;
+      value.user = req.user._id;
       value.uid = uid;
       const data = await application_service.create(value);
       return success_response(res, {
@@ -158,7 +159,7 @@ class application_controller {
     }
   }
 
-  async get_my_applications(req, res) {
+  async get_my_application(req, res) {
     try {
       const data = await application_service.find_by_user(req.user.id);
 

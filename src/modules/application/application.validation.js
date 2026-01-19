@@ -1,7 +1,6 @@
 const Joi = require("joi");
 
 exports.create_application_validation = Joi.object({
-  user: Joi.string().required(),
   intake: Joi.string().required(),
   id_card: Joi.object({
     url: Joi.string().required(),

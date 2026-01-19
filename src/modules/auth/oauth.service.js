@@ -2,11 +2,7 @@ const axios = require("axios");
 const { User } = require("../../models");
 const logger = require("../../utils/logger");
 const auth_service = require("./auth.service");
-const {
-  cache_token,
-  get_cached_token,
-  retry_async,
-} = require("./oauth.cache");
+const { cache_token, get_cached_token, retry_async } = require("./oauth.cache");
 
 class oauth_service {
   //* Verify Google token and extract user info with caching and retry logic
@@ -33,10 +29,10 @@ class oauth_service {
                 Authorization: `Bearer ${token}`,
               },
               timeout: 5000, //* 5 second timeout
-            }
+            },
           );
         },
-        { max_retries: 3 }
+        { max_retries: 3 },
       );
 
       const { email, name, picture, id } = response.data;
@@ -74,7 +70,7 @@ class oauth_service {
         throw new Error("Google token access denied");
       } else {
         throw new Error(
-          "Failed to verify Google token. Please try again later."
+          "Failed to verify Google token. Please try again later.",
         );
       }
     }
@@ -104,7 +100,7 @@ class oauth_service {
             timeout: 5000, //* 5 second timeout
           });
         },
-        { max_retries: 3 }
+        { max_retries: 3 },
       );
 
       const { mail, id, displayName, userPrincipalName } = response.data;
@@ -142,7 +138,7 @@ class oauth_service {
         throw new Error("Microsoft token access denied");
       } else {
         throw new Error(
-          "Failed to verify Microsoft token. Please try again later."
+          "Failed to verify Microsoft token. Please try again later.",
         );
       }
     }
@@ -220,7 +216,7 @@ class oauth_service {
         await auth_service.generate_tokens(
           user._id.toString(),
           user.role,
-          user.token_version
+          user.token_version,
         );
 
       //* Update last login
@@ -235,15 +231,36 @@ class oauth_service {
         user_id: user._id,
       });
 
+      const user_info = {
+        _id: user._id,
+        role: user.role,
+        status: user.status,
+      };
+
+      if (user.role === "student") {
+        const application = await auth_service.find_my_application(user._id);
+        if (application) {
+          user_info.is_application_submitted = true;
+        } else {
+          user_info.is_application_submitted = false;
+        }
+        if (user.previous_education) {
+          user_info.current_step = 1;
+        } else {
+          user_info.current_step = 0;
+        }
+        if (application.id_card?.url) {
+          user_info.current_step = 2;
+        } else {
+          user_info.current_step = 1;
+        }
+      }
+
       return {
         access_token,
         refresh_token,
         access_token_expires_in: access_expires_in,
-        user: {
-          _id: user._id,
-          role: user.role,
-          status: user.status,
-        },
+        user: user_info,
       };
     } catch (error) {
       logger.error({
