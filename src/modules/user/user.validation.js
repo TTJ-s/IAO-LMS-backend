@@ -13,8 +13,8 @@ exports.update_profile_validation = Joi.object({
   last_name: Joi.string().required(),
   phone: Joi.string().required(),
   previous_education: Joi.string().required(),
-  address: Joi.string().required(),
-  postal_code: Joi.string().required(),
-  country: Joi.string().required(),
-  city: Joi.string().required(),
+  address: Joi.string(),
+  postal_code: Joi.string(),
+  country: Joi.string(),
+  city: Joi.string(),
 });

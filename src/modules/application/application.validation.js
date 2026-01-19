@@ -8,9 +8,7 @@ exports.create_application_validation = Joi.object({
   qualification_certificate: Joi.object({
     url: Joi.string(),
   }),
-  remarks: Joi.string().required(),
-  payment_amount: Joi.number().required(),
-  is_paymentable: Joi.boolean().required(),
+  status: Joi.string().valid("drafted"),
 });
 
 exports.update_application_validation = Joi.object({
