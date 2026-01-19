@@ -15,7 +15,6 @@ const application_schema = new mongoose.Schema(
       flag: { type: Boolean, default: false },
     },
     remarks: { type: String, trim: true },
-    is_paymentable: { type: Boolean, default: true },
     payment_amount: { type: Number, default: 0 },
     payment_status: {
       type: String,

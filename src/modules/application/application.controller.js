@@ -48,7 +48,7 @@ class application_controller {
           message: "Intake not found",
         });
       }
-      if (value.is_paymentable === true) {
+      if (find_intake.admission_fee > 0) {
         value.payment_status = "pending";
         value.payment_amount = find_intake.admission_fee;
       } else {
