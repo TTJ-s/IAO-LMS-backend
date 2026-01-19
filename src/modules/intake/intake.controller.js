@@ -217,6 +217,7 @@ class intake_controller {
         registration_deadline: data.registration_deadline,
         status: data.status,
         admission_fee: data.admission_fee,
+        currency: data.program?.city?.country?.currency,
       };
       return success_response(res, {
         status: 200,

@@ -31,7 +31,18 @@ class intake_service {
     const data = await Intake.findOne({
       program: program_id,
       status: "open",
-    }).populate("program", "name");
+    })
+      .populate("program", "name")
+      .populate({
+        path: "program",
+        populate: {
+          path: "city",
+          populate: {
+            path: "country",
+            select: "currency",
+          },
+        },
+      });
     return data;
   }
 
