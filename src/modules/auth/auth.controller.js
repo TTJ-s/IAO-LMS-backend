@@ -40,7 +40,7 @@ class auth_controller {
         user.otp_tracking.send_locked_until > Date.now()
       ) {
         const remaining_seconds = Math.ceil(
-          (user.otp_tracking.send_locked_until - Date.now()) / 1000
+          (user.otp_tracking.send_locked_until - Date.now()) / 1000,
         );
 
         logger.warn({
@@ -75,7 +75,7 @@ class auth_controller {
       if (user.otp_tracking.send_attempts > 5) {
         //* Lock user for 15 minutes after 5 OTP send attempts
         user.otp_tracking.send_locked_until = new Date(
-          Date.now() + 15 * 60 * 1000
+          Date.now() + 15 * 60 * 1000,
         );
       }
       await user.save();
@@ -122,7 +122,7 @@ class auth_controller {
         user.otp_tracking.send_locked_until > Date.now()
       ) {
         const remaining_seconds = Math.ceil(
-          (user.otp_tracking.send_locked_until - Date.now()) / 1000
+          (user.otp_tracking.send_locked_until - Date.now()) / 1000,
         );
 
         logger.warn({
@@ -157,7 +157,7 @@ class auth_controller {
       if (user.otp_tracking.send_attempts > 5) {
         //* Lock user for 15 minutes after 5 OTP send attempts
         user.otp_tracking.send_locked_until = new Date(
-          Date.now() + 15 * 60 * 1000
+          Date.now() + 15 * 60 * 1000,
         );
       }
       await user.save();
@@ -234,7 +234,7 @@ class auth_controller {
         //* Lock after 5 failed attempts (15 minutes)
         if (user.otp_tracking.failed_attempts > 5) {
           user.otp_tracking.locked_until = new Date(
-            Date.now() + 15 * 60 * 1000
+            Date.now() + 15 * 60 * 1000,
           );
           //* Update last login
           user.last_login = new Date();
@@ -290,7 +290,7 @@ class auth_controller {
         await auth_service.generate_tokens(
           user._id.toString(),
           user.role,
-          user.token_version
+          user.token_version,
         );
 
       //* Clear OTP from database (GDPR: remove sensitive data after use)
@@ -319,15 +319,24 @@ class auth_controller {
         user_role: user.role,
       });
 
+      const user_info = {
+        _id: user._id,
+        role: user.role,
+        status: user.status,
+      };
+
+      if (user.role === "student") {
+        const application = await auth_service.find_my_application(user._id);
+        if (application) {
+          user_info.is_application_submitted = true;
+        }
+      }
+
       return success_response(res, {
         status: 200,
         message: "Login successful",
         data: {
-          user: {
-            _id: user._id,
-            role: user.role,
-            status: user.status,
-          },
+          user: user_info,
           access_token, //* Client stores in memory (expires in 15m)
           access_token_expires_in: access_expires_in,
           //* Refresh token is in HttpOnly cookie (not sent in body)
@@ -392,7 +401,7 @@ class auth_controller {
       //* 1. Still exists and active
       //* 2. token_version matches (not revoked)
       const user = await User.findById(user_id).select(
-        "_id role status token_version"
+        "_id role status token_version",
       );
 
       if (!user || user.status !== "active") {
@@ -434,7 +443,7 @@ class auth_controller {
       const new_access_token = auth_service.generate_access_token(
         user_id,
         user.role,
-        user.token_version
+        user.token_version,
       );
 
       const access_expires_in = process.env.JWT_ACCESS_EXPIRES_IN || "15m";

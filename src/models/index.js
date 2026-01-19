@@ -1,3 +1,5 @@
+const Application = require("./application.model");
+const Batch = require("./batch.model");
 const City = require("./city.model");
 const Counter = require("./counter.model");
 const Country = require("./country.model");
@@ -16,4 +18,6 @@ module.exports = {
   Language,
   Program,
   Intake,
+  Application,
+  Batch,
 };

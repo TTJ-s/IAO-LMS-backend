@@ -3,7 +3,7 @@
 //* No PII in tokens - only user_id, role, token_version
 
 const jwt = require("jsonwebtoken");
-const { User } = require("../../models");
+const { User, Application } = require("../../models");
 const logger = require("../../utils/logger");
 
 class auth_service {
@@ -16,7 +16,7 @@ class auth_service {
     const data = await User.findOneAndUpdate(
       { _id: user_id },
       { otp },
-      { new: true }
+      { new: true },
     );
     return data;
   }
@@ -25,7 +25,7 @@ class auth_service {
   generate_access_token(user_id, role, token_version) {
     if (!user_id || !role || token_version === undefined) {
       throw new Error(
-        "Missing required parameters for access token generation"
+        "Missing required parameters for access token generation",
       );
     }
 
@@ -69,7 +69,7 @@ class auth_service {
   generate_refresh_token(user_id, role, token_version) {
     if (!user_id || !role || token_version === undefined) {
       throw new Error(
-        "Missing required parameters for refresh token generation"
+        "Missing required parameters for refresh token generation",
       );
     }
 
@@ -118,12 +118,12 @@ class auth_service {
       const access_token = this.generate_access_token(
         user_id,
         role,
-        token_version
+        token_version,
       );
       const refresh_token = this.generate_refresh_token(
         user_id,
         role,
-        token_version
+        token_version,
       );
 
       logger.info({
@@ -159,7 +159,7 @@ class auth_service {
       const user = await User.findByIdAndUpdate(
         user_id,
         { $inc: { token_version: 1 } }, //* Increment version
-        { new: true }
+        { new: true },
       );
 
       if (!user) {
@@ -218,6 +218,11 @@ class auth_service {
 
       throw error;
     }
+  }
+
+  async find_my_application(user_id) {
+    const data = await Application.findOne({ user: user_id });
+    return data;
   }
 }
 

@@ -8,6 +8,7 @@ const city_route = require("../modules/master-data/city/city.routes");
 const language_route = require("../modules/master-data/language/language.routes");
 const program_route = require("../modules/program/program.routes");
 const intake_route = require("../modules/intake/intake.routes");
+const application_route = require("../modules/application/application.routes");
 const { verify_jwt } = require("../middlewares/auth.middleware");
 const { validate_api_key } = require("../middlewares/apikey.middleware");
 
@@ -29,5 +30,7 @@ router.use("/master-data/language", language_route);
 router.use("/program", program_route);
 //* Intake management routes
 router.use("/intake", intake_route);
+//* Application management routes
+router.use("/application", application_route);
 
 module.exports = router;
