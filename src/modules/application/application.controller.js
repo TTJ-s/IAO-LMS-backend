@@ -120,6 +120,7 @@ class application_controller {
       }
       if (existing_application.status === "waitlisted") {
         value.status = "resubmitted";
+        value.decision_date = moment().add(7, "days").toDate();
       }
       //TODO: remove from s3 when updating image url and add new image
       const data = await application_service.update(id, value);
@@ -325,6 +326,8 @@ class application_controller {
           application_id: id,
           batch_id,
         });
+      } else if (value.status === "waitlisted") {
+        value.decision_date = moment().add(7, "days").toDate();
       }
 
       const data = await application_service.update(id, value);
