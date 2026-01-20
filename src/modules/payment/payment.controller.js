@@ -23,7 +23,7 @@ class payment_controller {
           errors: error.details,
         });
       }
-      value.user = "696b42dbb5fe41133994cdca";
+      value.user = req.user._id;
       const payment = await payment_service.create_mollie_payment(
         value.amount,
         value.currency,
