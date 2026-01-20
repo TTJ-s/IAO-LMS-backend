@@ -2,14 +2,14 @@ const mollie = require("../../config/mollie");
 const { Payment } = require("../../models");
 
 class payment_service {
-  async create_mollie_payment(amount, currency, user, purpose) {
+  async create_mollie_payment(amount, currency, user, purpose, uid) {
     const payment = await mollie.payments.create({
       amount: {
         currency: currency,
         value: amount.toFixed(2),
       },
       description: `IAO Payment for ${purpose}`,
-      redirectUrl: process.env.MOLLIE_REDIRECT_URL,
+      redirectUrl: `${process.env.MOLLIE_REDIRECT_URL}/payment-uid/${uid}`,
       webhookUrl: process.env.MOLLIE_WEBHOOK_URL,
       metadata: {
         user_id: user,
@@ -31,6 +31,11 @@ class payment_service {
 
   async find_by_id(id) {
     const data = await Payment.findById(id);
+    return data;
+  }
+
+  async find_by_uid(uid) {
+    const data = await Payment.findOne({ uid });
     return data;
   }
 

@@ -24,22 +24,24 @@ class payment_controller {
         });
       }
       value.user = req.user._id;
+      const counter = await generate_counter("payment");
+      const padded_counter = String(counter).padStart(2, "0");
+      const uid = `IAO-PY-${padded_counter}`;
+      value.uid = uid;
       const payment = await payment_service.create_mollie_payment(
         value.amount,
         value.currency,
         value.user,
         value.purpose,
+        value.uid,
       );
       value.transaction_id = payment.id;
-      const counter = await generate_counter("payment");
-      const padded_counter = String(counter).padStart(2, "0");
-      const uid = `IN-${padded_counter}`;
-      value.uid = uid;
       const new_payment = await payment_service.create(value);
       const checkout_url = payment.getCheckoutUrl();
       const data = {
         checkout_url,
         _id: new_payment._id,
+        uid: new_payment.uid,
       };
       return success_response(res, {
         status: 201,
@@ -92,7 +94,7 @@ class payment_controller {
     }
   }
 
-  async get_payment(req, res) {
+  async get_payment_by_uid(req, res) {
     try {
       const { id } = req.params;
       if (!id) {
@@ -101,7 +103,7 @@ class payment_controller {
           message: "Payment ID is required",
         });
       }
-      const data = await payment_service.find_by_id(id);
+      const data = await payment_service.find_by_uid(id);
       if (!data) {
         return error_response(res, {
           status: 404,
