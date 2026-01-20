@@ -163,7 +163,12 @@ class application_controller {
           program_name: application.intake
             ? application.intake.program.name
             : application?.batch.intake.program.name,
-          ...mask_user_contact(application.user),
+          user: {
+            ...(application.user.toObject
+              ? application.user.toObject()
+              : application.user),
+            ...mask_user_contact(application.user),
+          },
         };
       });
       return success_response(res, {
