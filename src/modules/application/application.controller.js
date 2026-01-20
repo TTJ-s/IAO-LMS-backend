@@ -328,13 +328,13 @@ class application_controller {
         });
       } else if (value.status === "waitlisted") {
         value.decision_date = moment().add(7, "days").toDate();
-        if (value.id_card.flag) {
+        if (value?.id_card?.flag) {
           value.id_card = {
             flag: value.id_card.flag,
             url: existing_application.id_card.url,
           };
         }
-        if (value.qualification_certificate.flag) {
+        if (value?.qualification_certificate?.flag) {
           value.qualification_certificate = {
             flag: value.qualification_certificate.flag,
             url: existing_application.qualification_certificate.url,
