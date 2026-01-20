@@ -17,4 +17,6 @@ router
   .post(rate_limit(PRESETS.api), payment_controller.create_payment)
   .get(rate_limit(PRESETS.public), payment_controller.get_payments);
 
+router.get("/:id", rate_limit(PRESETS.public), payment_controller.get_payment);
+
 module.exports = router;

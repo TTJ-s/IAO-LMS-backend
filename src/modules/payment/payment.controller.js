@@ -35,12 +35,16 @@ class payment_controller {
       const padded_counter = String(counter).padStart(2, "0");
       const uid = `IN-${padded_counter}`;
       value.uid = uid;
-      await payment_service.create(value);
+      const new_payment = await payment_service.create(value);
       const checkout_url = payment.getCheckoutUrl();
+      const data = {
+        checkout_url,
+        _id: new_payment._id,
+      };
       return success_response(res, {
         status: 201,
         message: "Payment created successfully",
-        data: checkout_url,
+        data: data,
       });
     } catch (error) {
       logger.error({
@@ -77,6 +81,41 @@ class payment_controller {
     } catch (error) {
       logger.error({
         context: "payment.controller.get_payments",
+        message: error.message,
+        errors: error.stack,
+      });
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async get_payment(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Payment ID is required",
+        });
+      }
+      const data = await payment_service.find_by_id(id);
+      if (!data) {
+        return error_response(res, {
+          status: 404,
+          message: "Payment not found",
+        });
+      }
+      return success_response(res, {
+        status: 200,
+        message: "Payment found successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "payment.controller.get_payment",
         message: error.message,
         errors: error.stack,
       });
