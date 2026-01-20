@@ -205,7 +205,12 @@ class application_controller {
   async get_my_application(req, res) {
     try {
       const data = await application_service.find_by_user(req.user._id);
-
+      const payment = await application_service.find_payment_by_application_id(
+        data._id,
+      );
+      if (payment) {
+        data.currency = payment.currency;
+      }
       if (!data) {
         return error_response(res, {
           status: 404,
