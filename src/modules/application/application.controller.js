@@ -118,6 +118,10 @@ class application_controller {
           message: "Application not found",
         });
       }
+      if (existing_application.status === "waitlisted") {
+        value.status = "resubmitted";
+      }
+      //TODO: remove from s3 when updating image url and add new image
       const data = await application_service.update(id, value);
       return success_response(res, {
         status: 200,
@@ -141,15 +145,18 @@ class application_controller {
 
   async get_applications(req, res) {
     try {
-      const { page = 1, limit = 10, status } = req.query;
-      const filters = {};
+      const { page = 1, limit = 10 } = req.query;
+      const status = req.query["status[]"];
+      const filters = {
+        status: { $in: ["pending", "resubmitted", "waitlisted"] },
+      };
       const options = {
         page,
         limit,
       };
       const sort = {};
       if (status) {
-        filters.status = status;
+        filters.status = { $in: status };
       }
       const [data, total_count] = await Promise.all([
         application_service.find_all(filters, options, sort),
