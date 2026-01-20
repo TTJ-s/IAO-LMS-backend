@@ -76,7 +76,7 @@ jobs:
               --name IAO_LMS_BACKEND \
               -p 3456:3456 \
               --restart always \
-              --env-file /home/ubuntu/iao-new/.env/.env.production \
+              --env-file /home/ubuntu/iao-lms-backend/.env/.env.production \
               --network my-network \
               ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
             echo "🔎 Verifying container..."
