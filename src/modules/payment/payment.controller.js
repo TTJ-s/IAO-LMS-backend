@@ -36,17 +36,12 @@ class payment_controller {
         value.uid,
       );
       value.transaction_id = payment.id;
-      const new_payment = await payment_service.create(value);
+      await payment_service.create(value);
       const checkout_url = payment.getCheckoutUrl();
-      const data = {
-        checkout_url,
-        _id: new_payment._id,
-        uid: new_payment.uid,
-      };
       return success_response(res, {
         status: 201,
         message: "Payment created successfully",
-        data: data,
+        data: checkout_url,
       });
     } catch (error) {
       logger.error({
