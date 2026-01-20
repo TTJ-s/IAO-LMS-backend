@@ -18,6 +18,27 @@ class application_service {
     const { page = 1, limit = 10 } = options;
     const skip = (page - 1) * limit;
     const data = await Application.find(filters)
+      .populate(
+        "user",
+        "first_name last_name phone email previous_education address postal_code country city",
+      )
+      .populate({
+        path: "intake",
+        populate: {
+          path: "program",
+          select: "name program_type",
+        },
+      })
+      .populate({
+        path: "batch",
+        populate: {
+          path: "intake",
+          populate: {
+            path: "program",
+            select: "name program_type",
+          },
+        },
+      })
       .skip(skip)
       .limit(limit)
       .sort(sort);

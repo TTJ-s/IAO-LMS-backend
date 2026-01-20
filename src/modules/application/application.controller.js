@@ -5,6 +5,7 @@ const logger = require("../../utils/logger");
 const moment = require("moment-timezone");
 const { error_response, success_response } = require("../../utils/response");
 const { generate_counter } = require("../../utils/generate_counter");
+const { mask_user_contact } = require("../../utils/mask.util");
 
 class application_controller {
   async create_application(req, res) {
@@ -154,10 +155,21 @@ class application_controller {
         application_service.find_all(filters, options, sort),
         application_service.total_count(filters),
       ]);
+      const mapped_data = data.map((application) => {
+        return {
+          _id: application._id,
+          uid: application.uid,
+          status: application.status,
+          program_name: application.intake
+            ? application.intake.program.name
+            : application?.batch.intake.program.name,
+          ...mask_user_contact(application.user),
+        };
+      });
       return success_response(res, {
         status: 200,
         message: "Applications found successfully",
-        data,
+        data: mapped_data,
         total_count,
       });
     } catch (error) {
