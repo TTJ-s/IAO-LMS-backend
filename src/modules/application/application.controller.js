@@ -343,7 +343,9 @@ class application_controller {
       }
 
       const new_payload = {
-        ...existing_application,
+        ...(existing_application.toObject
+          ? existing_application.toObject()
+          : existing_application),
         ...value,
       };
 
