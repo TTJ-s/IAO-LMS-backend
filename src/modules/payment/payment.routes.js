@@ -18,7 +18,7 @@ router
   .get(rate_limit(PRESETS.public), payment_controller.get_payments);
 
 router.get(
-  "uid/:id",
+  "/uid/:id",
   rate_limit(PRESETS.public),
   payment_controller.get_payment_by_uid,
 );
