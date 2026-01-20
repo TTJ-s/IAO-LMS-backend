@@ -160,6 +160,8 @@ class application_controller {
           _id: application._id,
           uid: application.uid,
           status: application.status,
+          id_card: application.id_card,
+          qualification_certificate: application.qualification_certificate,
           program_name: application.intake
             ? application.intake.program.name
             : application?.batch.intake.program.name,
