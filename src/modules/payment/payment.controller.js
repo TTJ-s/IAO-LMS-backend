@@ -147,6 +147,12 @@ class payment_controller {
       } else if (mollie_payment.status === "canceled") {
         payment.status = "canceled";
       }
+      if (payment.application) {
+        await payment_service.update_application_status(
+          payment.application,
+          payment.status,
+        );
+      }
       await payment.save();
       return success_response(res, {
         status: 200,
