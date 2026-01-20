@@ -342,7 +342,12 @@ class application_controller {
         }
       }
 
-      const data = await application_service.update(id, value);
+      const new_payload = {
+        ...existing_application,
+        ...value,
+      };
+
+      const data = await application_service.update(id, new_payload);
       return success_response(res, {
         status: 200,
         message: "Application status updated successfully",
