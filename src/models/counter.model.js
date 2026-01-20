@@ -12,8 +12,9 @@ const counter_schema = new mongoose.Schema(
     application_sequence_value: { type: Number, default: 0 },
     batch_sequence_value: { type: Number, default: 0 },
     payment_sequence_value: { type: Number, default: 0 },
+    teacher_sequence_value: { type: Number, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Counter = mongoose.model("Counter", counter_schema);
