@@ -98,6 +98,9 @@ class application_service {
       program_name: app.intake
         ? app?.intake?.program?.name
         : app?.batch?.intake?.program?.name,
+      program_id: app.intake
+        ? app?.intake?.program?._id
+        : app?.batch?.intake?.program?._id,
     };
     return data;
   }
