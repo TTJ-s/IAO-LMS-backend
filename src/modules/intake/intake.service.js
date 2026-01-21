@@ -183,6 +183,7 @@ class intake_service {
       name: batch.name,
       program_name: batch?.intake?.program?.name,
       intake_name: batch?.intake?.name,
+      intake_uid: batch?.intake?.uid,
       student_count: batch.student_count,
       student_per_batch: batch?.intake?.student_per_batch,
       start_date: batch.start_date,
