@@ -115,7 +115,7 @@ class auth_controller {
           email,
           role: "student",
         };
-        user = await auth_service.create_user(payload);
+        user = await auth_service.create(payload);
       }
       //* Check if user is locked out from sending OTP
       if (

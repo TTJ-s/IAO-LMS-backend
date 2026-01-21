@@ -12,6 +12,11 @@ class auth_service {
     return data;
   }
 
+  async create(payload) {
+    const data = await User.create(payload);
+    return data;
+  }
+
   async add_otp(user_id, otp) {
     const data = await User.findOneAndUpdate(
       { _id: user_id },
