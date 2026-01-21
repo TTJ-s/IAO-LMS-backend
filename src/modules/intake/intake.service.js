@@ -77,7 +77,7 @@ class intake_service {
         path: "city",
         populate: {
           path: "country",
-          select: "name",
+          select: "name currency",
         },
       },
     });
@@ -96,6 +96,7 @@ class intake_service {
       registration_deadline: intake.registration_deadline,
       admission_fee: intake.admission_fee,
       country: intake.program?.city?.country?.name,
+      currency: intake.program?.city?.country?.currency,
       city: intake.program?.city?.name,
       start_date: intake.start_date,
       end_date: intake.end_date,
