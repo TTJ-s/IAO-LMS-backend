@@ -109,7 +109,11 @@ class intake_service {
   async find_all_batches_by_intake_id(filters = {}, options = {}, sort = {}) {
     const { page = 1, limit = 10 } = options;
     const skip = (page - 1) * limit;
-    const data = await Batch.find(filters).skip(skip).limit(limit).sort(sort);
+    const data = await Batch.find(filters)
+      .skip(skip)
+      .limit(limit)
+      .sort(sort)
+      .populate("intake", "student_per_batch");
     return data;
   }
 
@@ -148,6 +152,27 @@ class intake_service {
       $or: [{ intake: intake_id }, { batch: { $in: batch_ids } }],
       ...filters,
     });
+    return data;
+  }
+
+  async find_batch_by_id(id) {
+    const batch = await Batch.findById(id).populate({
+      path: "intake",
+      populate: {
+        path: "program",
+        select: "name",
+      },
+    });
+    const data = {
+      _id: batch._id,
+      name: batch.name,
+      program_name: batch?.intake?.program?.name,
+      intake_name: batch?.intake?.name,
+      student_count: batch.student_count,
+      student_per_batch: batch?.intake?.student_per_batch,
+      start_date: batch.start_date,
+      end_date: batch.end_date,
+    };
     return data;
   }
 }

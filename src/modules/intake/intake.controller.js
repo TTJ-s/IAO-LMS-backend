@@ -364,6 +364,36 @@ class intake_controller {
       });
     }
   }
+
+  async get_batch(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Batch ID is required",
+        });
+      }
+      const data = await intake_service.find_batch_by_id(id);
+      return success_response(res, {
+        status: 200,
+        message: "Batch found successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "intake.controller.get_batch",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
 }
 
 module.exports = new intake_controller();

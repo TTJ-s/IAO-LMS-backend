@@ -24,6 +24,12 @@ router.get(
 );
 
 router.get(
+  "/batch/:id",
+  rate_limit(PRESETS.public),
+  intake_controller.get_batch,
+);
+
+router.get(
   "/enrollments/:id",
   rate_limit(PRESETS.public),
   intake_controller.get_enrollments_by_intake_id,
