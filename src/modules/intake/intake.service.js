@@ -1,4 +1,5 @@
 const { Intake, Batch, Application } = require("../../models");
+const { mask_user_contact } = require("../../utils/mask.util");
 
 class intake_service {
   async create(payload) {
@@ -173,6 +174,39 @@ class intake_service {
       start_date: batch.start_date,
       end_date: batch.end_date,
     };
+    return data;
+  }
+
+  async find_batch_students_by_batch_id(filters = {}, options = {}, sort = {}) {
+    const { page = 1, limit = 10 } = options;
+    const skip = (page - 1) * limit;
+    const user = await Application.find(filters)
+      .populate(
+        "user",
+        "uid first_name last_name phone email previous_education address postal_code country city",
+      )
+      .skip(skip)
+      .limit(limit)
+      .sort(sort);
+    const data = user.map((user) => {
+      return {
+        _id: user._id,
+        uid: user.uid,
+        first_name: user.user.first_name,
+        last_name: user.user.last_name,
+        ...mask_user_contact(user.user),
+        previous_education: user.user.previous_education,
+        address: user.user.address,
+        postal_code: user.user.postal_code,
+        country: user.user.country,
+        city: user.user.city,
+      };
+    });
+    return data;
+  }
+
+  async total_count_batch_students_by_batch_id(filters = {}) {
+    const data = await Application.countDocuments(filters);
     return data;
   }
 }
