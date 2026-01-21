@@ -259,7 +259,10 @@ class intake_service {
       qualification_certificate: student.qualification_certificate,
       program_name: student?.batch?.intake?.program?.name,
       intake_name: student?.batch?.intake?.name,
+      intake_id: student?.batch?.intake?._id,
       batch_name: student?.batch?.name,
+      batch_id: student?.batch?._id,
+      enrolled_date: student?.batch?.createdAt,
     };
     return data;
   }
