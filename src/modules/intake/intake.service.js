@@ -144,16 +144,15 @@ class intake_service {
       .skip(skip)
       .limit(limit)
       .sort(sort);
-    const data = user.map((user) => {
+    const data = user.map((app) => {
       return {
-        _id: user._id,
-        uid: user.uid,
-        first_name: user.user.first_name,
-        last_name: user.user.last_name,
-        phone: mask_user_contact(user.user.phone),
-        email: user.user.email,
-        batch_name: user.batch.name,
-        enrolled_date: user.batch.createdAt,
+        _id: app._id,
+        uid: app.uid,
+        first_name: app.user.first_name,
+        last_name: app.user.last_name,
+        ...mask_user_contact(app.user),
+        batch_name: app.batch.name,
+        enrolled_date: app.batch.createdAt,
       };
     });
     return data;
