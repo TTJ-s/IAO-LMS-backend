@@ -71,7 +71,16 @@ class intake_service {
   }
 
   async find_intake_by_id(id) {
-    const intake = await Intake.findById(id);
+    const intake = await Intake.findById(id).populate({
+      path: "program",
+      populate: {
+        path: "city",
+        populate: {
+          path: "country",
+          select: "name",
+        },
+      },
+    });
     const batches = await this.find_batch_by_intake_id(id);
 
     const total_batch_count = batches.length;
@@ -82,10 +91,17 @@ class intake_service {
 
     return {
       _id: intake._id,
+      uid: intake.uid,
+      name: intake.name,
+      registration_deadline: intake.registration_deadline,
+      admission_fee: intake.admission_fee,
+      country: intake.program?.city?.country?.name,
+      city: intake.program?.city?.name,
       start_date: intake.start_date,
       end_date: intake.end_date,
       total_batch_count,
       total_student_count,
+      max_student_enrollment: intake.max_student_enrollment,
     };
   }
 
