@@ -135,13 +135,27 @@ class intake_service {
     const batches = await Batch.find({ intake: intake_id });
     const batch_ids = batches.map((batch) => batch._id);
 
-    const data = await Application.find({
+    const user = await Application.find({
       $or: [{ intake: intake_id }, { batch: { $in: batch_ids } }],
       ...filters,
     })
+      .populate("user", "uid first_name last_name phone email")
+      .populate("batch", "name createdAt")
       .skip(skip)
       .limit(limit)
       .sort(sort);
+    const data = user.map((user) => {
+      return {
+        _id: user._id,
+        uid: user.uid,
+        first_name: user.user.first_name,
+        last_name: user.user.last_name,
+        phone: mask_user_contact(user.user.phone),
+        email: user.user.email,
+        batch_name: user.batch.name,
+        enrolled_date: user.batch.createdAt,
+      };
+    });
     return data;
   }
 
