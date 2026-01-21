@@ -243,6 +243,8 @@ class auth_service {
         }
 
         if (application) {
+          user_info.application_status = application.status;
+          user_info.application_payment_status = application.payment_status;
           if (application.id_card?.url) {
             user_info.current_step = 2;
           } else {
