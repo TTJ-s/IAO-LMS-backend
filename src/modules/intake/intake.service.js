@@ -88,6 +88,18 @@ class intake_service {
       total_student_count,
     };
   }
+
+  async find_all_batches_by_intake_id(filters = {}, options = {}, sort = {}) {
+    const { page = 1, limit = 10 } = options;
+    const skip = (page - 1) * limit;
+    const data = await Batch.find(filters).skip(skip).limit(limit).sort(sort);
+    return data;
+  }
+
+  async total_count_batches_by_intake_id(filters = {}) {
+    const data = await Batch.countDocuments(filters);
+    return data;
+  }
 }
 
 module.exports = new intake_service();

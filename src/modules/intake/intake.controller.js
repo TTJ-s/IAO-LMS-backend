@@ -275,6 +275,49 @@ class intake_controller {
       });
     }
   }
+
+  async get_batches_by_intake_id(req, res) {
+    try {
+      const { id } = req.params;
+      const { page = 1, limit = 10 } = req.query;
+      const filters = {
+        intake: id,
+      };
+      const options = {
+        page,
+        limit,
+      };
+      const sort = {};
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Intake ID is required",
+        });
+      }
+      const [data, total_count] = await Promise.all([
+        intake_service.find_all_batches_by_intake_id(filters, options, sort),
+        intake_service.total_count_batches_by_intake_id(filters),
+      ]);
+      return success_response(res, {
+        status: 200,
+        message: "Batches found successfully",
+        data,
+        total_count,
+      });
+    } catch (error) {
+      logger.error({
+        context: "intake.controller.get_batches_by_intake_id",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
 }
 
 module.exports = new intake_controller();

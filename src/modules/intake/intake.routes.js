@@ -17,6 +17,12 @@ router.get(
   intake_controller.get_active_program_by_id,
 );
 
+router.get(
+  "/batches/:id",
+  rate_limit(PRESETS.public),
+  intake_controller.get_batches_by_intake_id,
+);
+
 router
   .route("/:id")
   .get(rate_limit(PRESETS.public), intake_controller.get_intake)
