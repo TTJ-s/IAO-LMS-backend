@@ -70,6 +70,9 @@ class application_service {
       })
       .lean();
 
+    if (!app) {
+      return null;
+    }
     const data = {
       _id: app._id,
       uid: app.uid,
