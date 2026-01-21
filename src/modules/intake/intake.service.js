@@ -1,4 +1,4 @@
-const { Intake, Batch } = require("../../models");
+const { Intake, Batch, Application } = require("../../models");
 
 class intake_service {
   async create(payload) {
@@ -98,6 +98,39 @@ class intake_service {
 
   async total_count_batches_by_intake_id(filters = {}) {
     const data = await Batch.countDocuments(filters);
+    return data;
+  }
+
+  async find_all_enrollments_by_intake_id(
+    intake_id,
+    filters = {},
+    options = {},
+    sort = {},
+  ) {
+    const { page = 1, limit = 10 } = options;
+    const skip = (page - 1) * limit;
+
+    const batches = await Batch.find({ intake: intake_id });
+    const batch_ids = batches.map((batch) => batch._id);
+
+    const data = await Application.find({
+      $or: [{ intake: intake_id }, { batch: { $in: batch_ids } }],
+      ...filters,
+    })
+      .skip(skip)
+      .limit(limit)
+      .sort(sort);
+    return data;
+  }
+
+  async total_count_enrollments_by_intake_id(intake_id, filters = {}) {
+    const batches = await Batch.find({ intake: intake_id });
+    const batch_ids = batches.map((batch) => batch._id);
+
+    const data = await Application.countDocuments({
+      $or: [{ intake: intake_id }, { batch: { $in: batch_ids } }],
+      ...filters,
+    });
     return data;
   }
 }
