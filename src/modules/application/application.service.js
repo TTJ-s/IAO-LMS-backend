@@ -46,12 +46,56 @@ class application_service {
   }
 
   async find_by_user(user) {
-    const data = await Application.findOne({ user })
+    const app = await Application.findOne({ user })
       .populate(
         "user",
         "first_name last_name phone email previous_education address postal_code country city",
       )
+      .populate({
+        path: "intake",
+        populate: {
+          path: "program",
+          select: "name program_type",
+        },
+      })
+      .populate({
+        path: "batch",
+        populate: {
+          path: "intake",
+          populate: {
+            path: "program",
+            select: "name program_type",
+          },
+        },
+      })
       .lean();
+
+    const data = {
+      _id: app._id,
+      uid: app.uid,
+      id_card: app.id_card,
+      qualification_certificate: app.qualification_certificate,
+      status: app.status,
+      remarks: app.remarks,
+      current_step: app.current_step,
+      decision_date: app.decision_date,
+      payment_amount: app.payment_amount,
+      payment_status: app.payment_status,
+      user: {
+        first_name: app.user.first_name,
+        last_name: app.user.last_name,
+        phone: app.user.phone,
+        email: app.user.email,
+        previous_education: app.user.previous_education,
+        address: app.user.address,
+        postal_code: app.user.postal_code,
+        country: app.user.country,
+        city: app.user.city,
+      },
+      program_name: app.intake
+        ? app?.intake?.program?.name
+        : app?.batch?.intake?.program?.name,
+    };
     return data;
   }
 
