@@ -226,6 +226,43 @@ class intake_service {
     const data = await Application.countDocuments(filters);
     return data;
   }
+
+  async find_student_by_id(id) {
+    const student = await Application.findById(id)
+      .populate(
+        "user",
+        "uid first_name last_name phone email previous_education address postal_code country city status",
+      )
+      .populate({
+        path: "batch",
+        populate: {
+          path: "intake",
+          populate: {
+            path: "program",
+            select: "name",
+          },
+        },
+      })
+      .lean();
+    const data = {
+      uid: student?.user?.uid,
+      first_name: student?.user?.first_name,
+      last_name: student?.user?.last_name,
+      ...mask_user_contact(student?.user),
+      previous_education: student?.user?.previous_education,
+      address: student?.user?.address,
+      postal_code: student?.user?.postal_code,
+      status: student?.user?.status,
+      country: student?.user?.country,
+      city: student?.user?.city,
+      id_card: student.id_card,
+      qualification_certificate: student.qualification_certificate,
+      program_name: student?.batch?.intake?.program?.name,
+      intake_name: student?.batch?.intake?.name,
+      batch_name: student?.batch?.name,
+    };
+    return data;
+  }
 }
 
 module.exports = new intake_service();

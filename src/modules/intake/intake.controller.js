@@ -437,6 +437,36 @@ class intake_controller {
       });
     }
   }
+
+  async get_student_by_app_id(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Application ID is required",
+        });
+      }
+      const data = await intake_service.find_student_by_id(id);
+      return success_response(res, {
+        status: 200,
+        message: "Student found successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "intake.controller.get_student",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
 }
 
 module.exports = new intake_controller();

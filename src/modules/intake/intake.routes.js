@@ -36,6 +36,12 @@ router.get(
 );
 
 router.get(
+  "/application/student/:id",
+  rate_limit(PRESETS.public),
+  intake_controller.get_student_by_app_id,
+);
+
+router.get(
   "/enrollments/:id",
   rate_limit(PRESETS.public),
   intake_controller.get_enrollments_by_intake_id,
