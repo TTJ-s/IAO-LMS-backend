@@ -139,7 +139,7 @@ class intake_service {
       $or: [{ intake: intake_id }, { batch: { $in: batch_ids } }],
       ...filters,
     })
-      .populate("user", "uid first_name last_name phone email")
+      .populate("user", "uid first_name last_name phone email status")
       .populate("batch", "name createdAt")
       .skip(skip)
       .limit(limit)
