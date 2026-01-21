@@ -150,6 +150,7 @@ class application_controller {
       const status = req.query["status[]"];
       const filters = {
         status: { $in: ["pending", "resubmitted", "waitlisted"] },
+        payment_status: "paid",
       };
       const options = {
         page,
