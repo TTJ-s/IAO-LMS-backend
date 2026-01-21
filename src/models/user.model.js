@@ -60,8 +60,17 @@ const user_schema = new mongoose.Schema(
       deleted_at: { type: Date },
       deleted_by: { type: mongoose.Types.ObjectId, ref: "User" },
     },
+    location: [{
+      type: mongoose.Types.ObjectId,
+      ref: "Location",
+    }], //* Used for teachers
+    language: [{
+      type: mongoose.Types.ObjectId,
+      ref: "Language",
+    }], //* Used for teachers
+    qualification: { type: String, trim: true }, //* Used for teachers
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 user_schema.index({ email: 1 });
@@ -69,6 +78,9 @@ user_schema.index({ phone: 1 });
 user_schema.index({ role_access: 1 });
 user_schema.index({ email: 1, phone: 1 });
 user_schema.index({ role: 1, status: 1 });
+user_schema.index({ status: 1 });
+user_schema.index({ location: 1 });
+user_schema.index({ language: 1 });
 
 user_schema.index({
   first_name: "text",

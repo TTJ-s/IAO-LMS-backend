@@ -37,7 +37,7 @@ const application_schema = new mongoose.Schema(
       default: "pending",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 application_schema.index({ user: 1 });

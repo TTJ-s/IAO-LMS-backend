@@ -1,5 +1,5 @@
 const mollie = require("../../config/mollie");
-const { Payment } = require("../../models");
+const { Payment, Application } = require("../../models");
 
 class payment_service {
   async create_mollie_payment(amount, currency, user, purpose, uid) {
@@ -58,6 +58,15 @@ class payment_service {
 
   async total_count(filters = {}) {
     const data = await Payment.countDocuments(filters);
+    return data;
+  }
+
+  async update_application_status(id, status) {
+    const data = await Application.findByIdAndUpdate(
+      id,
+      { payment_status: status },
+      { new: true },
+    );
     return data;
   }
 }

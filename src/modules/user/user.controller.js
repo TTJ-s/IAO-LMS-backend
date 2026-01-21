@@ -274,6 +274,115 @@ class user_controller {
       });
     }
   }
+
+  async create_teacher(req, res) {
+    try {
+      const { error, value } = validation.create_teacher_validation.validate(
+        req.body,
+      );
+      if (error) {
+        logger.warn({
+          context: "user.controller.create_teacher",
+          message: error.details[0].message,
+          errors: error.details,
+        });
+
+        return error_response(res, {
+          status: 400,
+          message: error.details[0].message,
+          errors: error.details,
+        });
+      }
+      const find_existing_teacher = await user_service.find_by_email_or_phone(
+        value.email,
+        value.phone,
+      );
+      if (find_existing_teacher) {
+        logger.warn({
+          context: "user.controller.create_teacher",
+          message: "Teacher with this email or phone already exists",
+        });
+
+        return error_response(res, {
+          status: 400,
+          message: "Teacher with this email or phone already exists",
+        });
+      }
+      const counter = await generate_counter("teacher");
+      const padded_counter = String(counter).padStart(2, "0");
+      const uid = `TE-${padded_counter}`;
+      value.uid = uid;
+      value.role = "teacher";
+      const data = await user_service.create(value);
+      //TODO: send mail about admin creation
+      return success_response(res, {
+        status: 201,
+        message: "Teacher created successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "user.controller.create_teacher",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async get_teachers(req, res) {
+    try {
+      const { page = 1, limit = 10 } = req.query;
+      const filters = {
+        role: "teacher",
+      };
+      const options = {
+        page,
+        limit,
+      };
+      const sort = {};
+      const [data, total_count] = await Promise.all([
+        user_service.find_all(filters, options, sort),
+        user_service.total_count(filters),
+      ]);
+      const mapped_data = data.map((user) => {
+        return {
+          _id: user._id,
+          uid: user.uid,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          ...mask_user_contact(user),
+          location: user.location,
+          language: user.language,
+          qualification: user.qualification,
+          status: user.status,
+        };
+      });
+      return success_response(res, {
+        status: 200,
+        message: "Teachers fetched successfully",
+        data: mapped_data,
+        total_count,
+      });
+    } catch (error) {
+      logger.error({
+        context: "user.controller.get_teachers",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
 }
 
 module.exports = new user_controller();

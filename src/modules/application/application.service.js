@@ -1,4 +1,4 @@
-const { Application, Intake } = require("../../models");
+const { Application, Intake, Payment } = require("../../models");
 
 class application_service {
   async create(payload) {
@@ -46,10 +46,12 @@ class application_service {
   }
 
   async find_by_user(user) {
-    const data = await Application.findOne({ user }).populate(
-      "user",
-      "first_name last_name phone email previous_education address postal_code country city",
-    );
+    const data = await Application.findOne({ user })
+      .populate(
+        "user",
+        "first_name last_name phone email previous_education address postal_code country city",
+      )
+      .lean();
     return data;
   }
 
@@ -67,6 +69,11 @@ class application_service {
 
   async find_intake_by_id(id) {
     const data = await Intake.findById(id);
+    return data;
+  }
+
+  async find_payment_by_application_id(id) {
+    const data = await Payment.findOne({ application: id });
     return data;
   }
 }
