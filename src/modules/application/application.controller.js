@@ -26,7 +26,7 @@ class application_controller {
         });
       }
       const existing_application = await application_service.find_by_user(
-        value.user,
+        req.user._id,
       );
       if (existing_application) {
         logger.warn({
