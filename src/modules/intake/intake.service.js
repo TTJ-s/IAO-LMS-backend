@@ -153,6 +153,7 @@ class intake_service {
         ...mask_user_contact(app.user),
         batch_name: app.batch.name,
         enrolled_date: app.batch.createdAt,
+        status: app.user.status,
       };
     });
     return data;
