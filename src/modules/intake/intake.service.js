@@ -180,13 +180,15 @@ class intake_service {
     });
     const data = {
       _id: batch._id,
+      uid: batch?.uid,
       name: batch.name,
       program_name: batch?.intake?.program?.name,
       intake_name: batch?.intake?.name,
+      intake_id: batch?.intake?._id,
       student_count: batch.student_count,
       student_per_batch: batch?.intake?.student_per_batch,
-      start_date: batch.start_date,
-      end_date: batch.end_date,
+      start_date: batch?.intake?.start_date,
+      end_date: batch?.intake?.end_date,
     };
     return data;
   }
@@ -197,7 +199,7 @@ class intake_service {
     const user = await Application.find(filters)
       .populate(
         "user",
-        "uid first_name last_name phone email previous_education address postal_code country city",
+        "uid first_name last_name phone email previous_education address postal_code country city status",
       )
       .skip(skip)
       .limit(limit)
@@ -212,6 +214,7 @@ class intake_service {
         previous_education: user.user.previous_education,
         address: user.user.address,
         postal_code: user.user.postal_code,
+        status: user.user.status,
         country: user.user.country,
         city: user.user.city,
       };
@@ -221,6 +224,43 @@ class intake_service {
 
   async total_count_batch_students_by_batch_id(filters = {}) {
     const data = await Application.countDocuments(filters);
+    return data;
+  }
+
+  async find_student_by_id(id) {
+    const student = await Application.findById(id)
+      .populate(
+        "user",
+        "uid first_name last_name phone email previous_education address postal_code country city status",
+      )
+      .populate({
+        path: "batch",
+        populate: {
+          path: "intake",
+          populate: {
+            path: "program",
+            select: "name",
+          },
+        },
+      })
+      .lean();
+    const data = {
+      uid: student?.user?.uid,
+      first_name: student?.user?.first_name,
+      last_name: student?.user?.last_name,
+      ...mask_user_contact(student?.user),
+      previous_education: student?.user?.previous_education,
+      address: student?.user?.address,
+      postal_code: student?.user?.postal_code,
+      status: student?.user?.status,
+      country: student?.user?.country,
+      city: student?.user?.city,
+      id_card: student.id_card,
+      qualification_certificate: student.qualification_certificate,
+      program_name: student?.batch?.intake?.program?.name,
+      intake_name: student?.batch?.intake?.name,
+      batch_name: student?.batch?.name,
+    };
     return data;
   }
 }
