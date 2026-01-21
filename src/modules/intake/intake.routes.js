@@ -17,8 +17,33 @@ router.get(
   intake_controller.get_active_program_by_id,
 );
 
+router.get(
+  "/batches/:id",
+  rate_limit(PRESETS.public),
+  intake_controller.get_batches_by_intake_id,
+);
+
+router.get(
+  "/batch/:id",
+  rate_limit(PRESETS.public),
+  intake_controller.get_batch,
+);
+
+router.get(
+  "/batch/students/:id",
+  rate_limit(PRESETS.public),
+  intake_controller.get_batch_students,
+);
+
+router.get(
+  "/enrollments/:id",
+  rate_limit(PRESETS.public),
+  intake_controller.get_enrollments_by_intake_id,
+);
+
 router
   .route("/:id")
+  .get(rate_limit(PRESETS.public), intake_controller.get_intake)
   .delete(rate_limit(PRESETS.api), intake_controller.delete_intake)
   .put(rate_limit(PRESETS.api), intake_controller.update_intake);
 

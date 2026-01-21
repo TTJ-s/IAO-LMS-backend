@@ -108,6 +108,43 @@ class intake_controller {
     }
   }
 
+  async get_intake(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Intake ID is required",
+        });
+      }
+      const data = await intake_service.find_intake_by_id(id);
+      if (!data) {
+        return error_response(res, {
+          status: 404,
+          message: "Intake not found",
+        });
+      }
+
+      return success_response(res, {
+        status: 200,
+        message: "Intake found successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "intake.controller.get_intake",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
   async delete_intake(req, res) {
     try {
       const { id } = req.params;
@@ -227,6 +264,168 @@ class intake_controller {
     } catch (error) {
       logger.error({
         context: "intake.controller.get_active_program_by_id",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async get_batches_by_intake_id(req, res) {
+    try {
+      const { id } = req.params;
+      const { page = 1, limit = 10 } = req.query;
+      const filters = {
+        intake: id,
+      };
+      const options = {
+        page,
+        limit,
+      };
+      const sort = {};
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Intake ID is required",
+        });
+      }
+      const [data, total_count] = await Promise.all([
+        intake_service.find_all_batches_by_intake_id(filters, options, sort),
+        intake_service.total_count_batches_by_intake_id(filters),
+      ]);
+      return success_response(res, {
+        status: 200,
+        message: "Batches found successfully",
+        data,
+        total_count,
+      });
+    } catch (error) {
+      logger.error({
+        context: "intake.controller.get_batches_by_intake_id",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async get_enrollments_by_intake_id(req, res) {
+    try {
+      const { id } = req.params;
+      const { page = 1, limit = 10 } = req.query;
+      const filters = {};
+      const options = {
+        page,
+        limit,
+      };
+      const sort = {};
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Intake ID is required",
+        });
+      }
+      const [data, total_count] = await Promise.all([
+        intake_service.find_all_enrollments_by_intake_id(
+          id,
+          filters,
+          options,
+          sort,
+        ),
+        intake_service.total_count_enrollments_by_intake_id(id, filters),
+      ]);
+      return success_response(res, {
+        status: 200,
+        message: "Enrollments found successfully",
+        data,
+        total_count,
+      });
+    } catch (error) {
+      logger.error({
+        context: "intake.controller.get_enrollments_by_intake_id",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async get_batch(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Batch ID is required",
+        });
+      }
+      const data = await intake_service.find_batch_by_id(id);
+      return success_response(res, {
+        status: 200,
+        message: "Batch found successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "intake.controller.get_batch",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
+  async get_batch_students(req, res) {
+    try {
+      const { id } = req.params;
+      const { page = 1, limit = 10 } = req.query;
+      const filters = {
+        batch: id,
+      };
+      const options = {
+        page,
+        limit,
+      };
+      const sort = {};
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Batch ID is required",
+        });
+      }
+      const [data, total_count] = await Promise.all([
+        intake_service.find_batch_students_by_batch_id(filters, options, sort),
+        intake_service.total_count_batch_students_by_batch_id(filters),
+      ]);
+      return success_response(res, {
+        status: 200,
+        message: "Batch students found successfully",
+        data,
+        total_count,
+      });
+    } catch (error) {
+      logger.error({
+        context: "intake.controller.get_batch_students",
         message: error.message,
         errors: error.stack,
       });
