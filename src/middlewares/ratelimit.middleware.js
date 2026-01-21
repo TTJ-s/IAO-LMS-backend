@@ -154,7 +154,7 @@ const PRESETS = {
   //* OTP endpoints
   otp: {
     window_size_ms: 5 * 60 * 1000, //* 5 minutes
-    max_requests: 3,
+    max_requests: 5,
     message: "Too many OTP requests. Please try again in 5 minutes.",
   },
 
