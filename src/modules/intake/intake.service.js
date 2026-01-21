@@ -180,15 +180,15 @@ class intake_service {
     });
     const data = {
       _id: batch._id,
+      uid: batch?.uid,
       name: batch.name,
       program_name: batch?.intake?.program?.name,
       intake_name: batch?.intake?.name,
-      intake_uid: batch?.intake?.uid,
       intake_id: batch?.intake?._id,
       student_count: batch.student_count,
       student_per_batch: batch?.intake?.student_per_batch,
-      start_date: batch.start_date,
-      end_date: batch.end_date,
+      start_date: batch?.intake?.start_date,
+      end_date: batch?.intake?.end_date,
     };
     return data;
   }
@@ -199,7 +199,7 @@ class intake_service {
     const user = await Application.find(filters)
       .populate(
         "user",
-        "uid first_name last_name phone email previous_education address postal_code country city",
+        "uid first_name last_name phone email previous_education address postal_code country city status",
       )
       .skip(skip)
       .limit(limit)
@@ -214,6 +214,7 @@ class intake_service {
         previous_education: user.user.previous_education,
         address: user.user.address,
         postal_code: user.user.postal_code,
+        status: user.user.status,
         country: user.user.country,
         city: user.user.city,
       };
