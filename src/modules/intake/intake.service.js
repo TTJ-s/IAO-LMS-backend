@@ -1,4 +1,4 @@
-const { Intake } = require("../../models");
+const { Intake, Batch } = require("../../models");
 
 class intake_service {
   async create(payload) {
@@ -63,6 +63,30 @@ class intake_service {
   async total_count(filters = {}) {
     const data = await Intake.countDocuments(filters);
     return data;
+  }
+
+  async find_batch_by_intake_id(intake) {
+    const data = await Batch.find({ intake });
+    return data;
+  }
+
+  async find_intake_by_id(id) {
+    const intake = await Intake.findById(id);
+    const batches = await this.find_batch_by_intake_id(id);
+
+    const total_batch_count = batches.length;
+    const total_student_count = batches.reduce(
+      (sum, batch) => sum + batch.student_count,
+      0,
+    );
+
+    return {
+      _id: intake._id,
+      start_date: intake.start_date,
+      end_date: intake.end_date,
+      total_batch_count,
+      total_student_count,
+    };
   }
 }
 

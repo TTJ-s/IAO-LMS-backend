@@ -108,6 +108,43 @@ class intake_controller {
     }
   }
 
+  async get_intake(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Intake ID is required",
+        });
+      }
+      const data = await intake_service.find_intake_by_id(id);
+      if (!data) {
+        return error_response(res, {
+          status: 404,
+          message: "Intake not found",
+        });
+      }
+
+      return success_response(res, {
+        status: 200,
+        message: "Intake found successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "intake.controller.get_intake",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
   async delete_intake(req, res) {
     try {
       const { id } = req.params;

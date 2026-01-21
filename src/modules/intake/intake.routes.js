@@ -19,6 +19,7 @@ router.get(
 
 router
   .route("/:id")
+  .get(rate_limit(PRESETS.public), intake_controller.get_intake)
   .delete(rate_limit(PRESETS.api), intake_controller.delete_intake)
   .put(rate_limit(PRESETS.api), intake_controller.update_intake);
 

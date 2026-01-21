@@ -346,6 +346,23 @@ class application_controller {
             url: existing_application.qualification_certificate.url,
           };
         }
+      } else if (value.status === "rejected") {
+        if (value?.id_card?.flag) {
+          value.id_card = {
+            flag: value.id_card
+              ? value.id_card.flag
+              : existing_application.id_card.flag,
+            url: existing_application.id_card.url,
+          };
+        }
+        if (value?.qualification_certificate?.flag) {
+          value.qualification_certificate = {
+            flag: value.qualification_certificate
+              ? validation.qualification_certificate.flag
+              : existing_application.qualification_certificate.flag,
+            url: existing_application.qualification_certificate.url,
+          };
+        }
       }
 
       const new_payload = {
