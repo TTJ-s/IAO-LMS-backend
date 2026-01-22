@@ -16,6 +16,7 @@ exports.create_academic_validation = Joi.object({
       "string.pattern.base":
         "Registration End date must be in YYYY-MM-DD format.",
     }),
+  status: Joi.boolean().required(),
 });
 
 exports.update_academic_validation = Joi.object({
@@ -32,4 +33,5 @@ exports.update_academic_validation = Joi.object({
       "string.pattern.base":
         "Registration End date must be in YYYY-MM-DD format.",
     }),
+  status: Joi.boolean(),
 });

@@ -45,7 +45,7 @@ class academic_service {
   async find_intakes_list_by_academic_id(filters = {}, options = {}, sort = {}) {
     const { page = 1, limit = 10 } = options;
     const skip = (page - 1) * limit;
-    const data = await Intake.find(filters).sort(sort).skip(skip).limit(limit);
+    const data = await Intake.find(filters).sort(sort).skip(skip).limit(limit).populate("program", "name");
     return data;
   }
 
