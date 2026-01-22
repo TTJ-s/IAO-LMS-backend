@@ -5,10 +5,10 @@ const language_schema = new mongoose.Schema(
     name: { type: String, trim: true },
     status: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 language_schema.index({ name: 1 });
