@@ -30,7 +30,7 @@ class intake_controller {
       }
 
       if (value.registration_deadline) {
-        value.end_date = moment(value.registration_deadline)
+        value.registration_deadline = moment(value.registration_deadline)
           .endOf("day")
           .toDate();
       }
@@ -53,7 +53,7 @@ class intake_controller {
         );
         payload.push({
           uid,
-          name,
+          name: name,
           program: value.program[i],
           academic: value.academic,
           start_date: value.start_date,

@@ -9,6 +9,8 @@ const Language = require("./language.model");
 const Payment = require("./payment.model");
 const Program = require("./program.model");
 const Role = require("./role.model");
+const TeacherRole = require("./teacher_roles.model");
+const TeacherTitle = require("./teacher_title.model");
 const User = require("./user.model");
 
 module.exports = {
@@ -24,4 +26,6 @@ module.exports = {
   Batch,
   Payment,
   Academic,
+  TeacherTitle,
+  TeacherRole,
 };
