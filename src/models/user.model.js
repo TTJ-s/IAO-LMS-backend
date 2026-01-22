@@ -60,14 +60,20 @@ const user_schema = new mongoose.Schema(
       deleted_at: { type: Date },
       deleted_by: { type: mongoose.Types.ObjectId, ref: "User" },
     },
-    location: [{
-      type: mongoose.Types.ObjectId,
-      ref: "Location",
-    }], //* Used for teachers
-    language: [{
-      type: mongoose.Types.ObjectId,
-      ref: "Language",
-    }], //* Used for teachers
+    location: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Location",
+      },
+    ], //* Used for teachers
+    language: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Language",
+      },
+    ], //* Used for teachers
+    teacher_title: { type: mongoose.Types.ObjectId, ref: "TeacherTitle" }, //* Used for teachers
+    teacher_role: { type: mongoose.Types.ObjectId, ref: "TeacherRole" }, //* Used for teachers
     qualification: { type: String, trim: true }, //* Used for teachers
   },
   { timestamps: true },

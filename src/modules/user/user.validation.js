@@ -27,5 +27,7 @@ exports.create_teacher_validation = Joi.object({
   location: Joi.array().items(Joi.string()).required(),
   language: Joi.array().items(Joi.string()).required(),
   qualification: Joi.string().required(),
+  teacher_title: Joi.string().required(),
+  teacher_role: Joi.string().required(),
   status: Joi.boolean(),
 });

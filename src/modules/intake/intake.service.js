@@ -1,14 +1,15 @@
+const moment = require("moment-timezone");
 const { Intake, Batch, Application, Program } = require("../../models");
 const { mask_user_contact } = require("../../utils/mask.util");
 
 class intake_service {
   async create(payload) {
-    const data = Intake.create(payload);
+    const data = await Intake.create(payload);
     return data;
   }
 
   async create_many(payload) {
-    const data = Intake.insertMany(payload);
+    const data = await Intake.insertMany(payload);
     return data;
   }
 
