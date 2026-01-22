@@ -2,6 +2,7 @@ const validation = require("./academic.validation");
 const academic_service = require("./academic.service");
 const logger = require("../../utils/logger");
 const { error_response, success_response } = require("../../utils/response");
+const { generate_counter } = require("../../utils/generate_counter");
 
 class academic_controller {
   async create_academic(req, res) {
@@ -116,7 +117,6 @@ class academic_controller {
         });
       }
       const data = await academic_service.update(id, value);
-      //TODO: copy intakes also
       return success_response(res, {
         status: 200,
         message: "Academic updated successfully",
@@ -159,6 +159,26 @@ class academic_controller {
       };
 
       const new_academic = await academic_service.create(new_payload);
+      const intakes = await academic_service.find_intakes_by_academic_id(id);
+      const payload = [];
+      for (let i = 0; i < intakes.length; i++) {
+        const counter = await generate_counter("intake");
+        const padded_counter = String(counter).padStart(2, "0");
+        const uid = `IN-${padded_counter}`;
+        payload.push({
+          uid,
+          name: `${intakes[i].name} (copy)`,
+          academic: new_academic._id,
+          program: intakes[i].program,
+          admission_fee: intakes[i].admission_fee,
+          start_date: intakes[i].start_date,
+          end_date: intakes[i].end_date,
+          registration_deadline: intakes[i].registration_deadline,
+          student_per_batch: intakes[i].student_per_batch,
+          max_student_enrollment: intakes[i].max_student_enrollment,
+        });
+      }
+      await academic_service.duplicate_intakes(payload);
       return success_response(res, {
         status: 200,
         message: "Academic duplicated successfully",

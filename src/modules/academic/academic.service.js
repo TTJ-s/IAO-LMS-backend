@@ -1,3 +1,4 @@
+const { Intake } = require("../../models");
 const Academic = require("../../models/academic.model");
 
 class academic_service {
@@ -7,6 +8,17 @@ class academic_service {
 
   async find_by_name(name) {
     return await Academic.findOne({ name });
+  }
+
+  async find_intakes_by_academic_id(academic) {
+    const data = await Intake.find({ academic });
+    return data;
+  }
+
+  async duplicate_intakes(payload) {
+    //TODO: duplicate modules also
+    const data = await Intake.insertMany(payload);
+    return data;
   }
 
   async find_by_id(id) {
