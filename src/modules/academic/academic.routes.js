@@ -11,6 +11,12 @@ router
   .post(rate_limit(PRESETS.api), academic_controller.create_academic)
   .get(rate_limit(PRESETS.public), academic_controller.get_academics);
 
+router.get(
+  "/intakes/:id",
+  rate_limit(PRESETS.public),
+  academic_controller.get_intakes_by_academic_id,
+);
+
 router
   .route("/:id")
   .put(rate_limit(PRESETS.api), academic_controller.update_academic)

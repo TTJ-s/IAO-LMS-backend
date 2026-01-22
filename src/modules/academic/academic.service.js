@@ -1,5 +1,4 @@
-const { Intake } = require("../../models");
-const Academic = require("../../models/academic.model");
+const { Intake, Academic } = require("../../models");
 
 class academic_service {
   async create(data) {
@@ -41,6 +40,17 @@ class academic_service {
 
   async delete(id) {
     return await Academic.findByIdAndDelete(id);
+  }
+
+  async find_intakes_by_academic_id(filters = {}, options = {}, sort = {}) {
+    const { page = 1, limit = 10 } = options;
+    const skip = (page - 1) * limit;
+    const data = await Intake.find(filters).sort(sort).skip(skip).limit(limit);
+    return data;
+  }
+
+  async total_intake_count(filters = {}) {
+    return await Intake.countDocuments(filters);
   }
 
   async total_count(filters = {}) {

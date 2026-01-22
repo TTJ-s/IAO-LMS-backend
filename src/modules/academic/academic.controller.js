@@ -197,6 +197,39 @@ class academic_controller {
       });
     }
   }
+
+  async get_intakes_by_academic_id(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Academic ID is required",
+        });
+      }
+      const [data, total_count] = await Promise.all([
+        academic_service.find_intakes_by_academic_id(id),
+        academic_service.total_intake_count(id),
+      ]);
+      return success_response(res, {
+        status: 200,
+        message: "Intakes found successfully",
+        data,
+        total_count,
+      });
+    } catch (error) {
+      logger.error({
+        context: "academic.controller.get_intakes_by_academic_id",
+        message: error.message,
+        errors: error.stack,
+      });
+      return error_response(res, {
+        status: 400,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
 }
 
 module.exports = new academic_controller();
