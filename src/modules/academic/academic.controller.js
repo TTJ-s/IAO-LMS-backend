@@ -201,6 +201,15 @@ class academic_controller {
   async get_intakes_by_academic_id(req, res) {
     try {
       const { id } = req.params;
+      const { page = 1, limit = 10 } = req.query;
+      const filters = {
+        academic: id,
+      };
+      const options = {
+        page,
+        limit,
+      };
+      const sort = {};
       if (!id) {
         return error_response(res, {
           status: 400,
@@ -208,8 +217,12 @@ class academic_controller {
         });
       }
       const [data, total_count] = await Promise.all([
-        academic_service.find_intakes_by_academic_id(id),
-        academic_service.total_intake_count(id),
+        academic_service.find_intakes_list_by_academic_id(
+          filters,
+          options,
+          sort,
+        ),
+        academic_service.total_intake_count(filters),
       ]);
       return success_response(res, {
         status: 200,

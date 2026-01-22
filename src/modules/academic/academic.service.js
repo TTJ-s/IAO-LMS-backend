@@ -42,7 +42,7 @@ class academic_service {
     return await Academic.findByIdAndDelete(id);
   }
 
-  async find_intakes_by_academic_id(filters = {}, options = {}, sort = {}) {
+  async find_intakes_list_by_academic_id(filters = {}, options = {}, sort = {}) {
     const { page = 1, limit = 10 } = options;
     const skip = (page - 1) * limit;
     const data = await Intake.find(filters).sort(sort).skip(skip).limit(limit);
