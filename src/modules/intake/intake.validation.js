@@ -2,7 +2,8 @@ const Joi = require("joi");
 
 exports.create_intake_validation = Joi.object({
   name: Joi.string().required(),
-  program: Joi.string().required(),
+  program: Joi.array().required(),
+  academic: Joi.string().required(),
   admission_fee: Joi.number().required(),
   start_date: Joi.string()
     .pattern(/^\d{4}-\d{2}-\d{2}$/)
@@ -29,7 +30,8 @@ exports.create_intake_validation = Joi.object({
 
 exports.update_intake_validation = Joi.object({
   name: Joi.string(),
-  program: Joi.string(),
+  program: Joi.array(),
+  academic: Joi.string(),
   admission_fee: Joi.number(),
   start_date: Joi.string()
     .pattern(/^\d{4}-\d{2}-\d{2}$/)

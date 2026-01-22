@@ -1,9 +1,19 @@
-const { Intake, Batch, Application } = require("../../models");
+const { Intake, Batch, Application, Program } = require("../../models");
 const { mask_user_contact } = require("../../utils/mask.util");
 
 class intake_service {
   async create(payload) {
     const data = Intake.create(payload);
+    return data;
+  }
+
+  async create_many(payload) {
+    const data = Intake.insertMany(payload);
+    return data;
+  }
+
+  async find_program_by_id(id) {
+    const data = await Program.findById(id);
     return data;
   }
 

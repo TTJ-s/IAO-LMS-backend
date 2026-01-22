@@ -25,21 +25,6 @@ class intake_controller {
         });
       }
 
-      const existing_intake = await intake_service.find_by_name(
-        value.intake_name,
-      );
-      if (existing_intake) {
-        logger.warn({
-          context: "intake.controller.create_intake",
-          message: "Intake already exists",
-        });
-
-        return error_response(res, {
-          status: 400,
-          message: "Intake already exists",
-        });
-      }
-
       if (value.end_date) {
         value.end_date = moment(value.end_date).endOf("day").toDate();
       }
@@ -49,11 +34,31 @@ class intake_controller {
           .endOf("day")
           .toDate();
       }
-      const counter = await generate_counter("intake");
-      const padded_counter = String(counter).padStart(2, "0");
-      const uid = `IN-${padded_counter}`;
-      value.uid = uid;
-      const data = await intake_service.create(value);
+      let payload = [];
+      for (let i = 0; i < value.program.length; i++) {
+        const counter = await generate_counter("intake");
+        const padded_counter = String(counter).padStart(2, "0");
+        const uid = `IN-${padded_counter}`;
+        const program = await intake_service.find_program_by_id(
+          value.program[i],
+        );
+        const intake_end_date = moment
+          .tz(value.start_date, "YYYY-MM-DD", "UTC")
+          .add(program.year, "years")
+          .format("YYYY-MM-DD");
+        payload.push({
+          uid,
+          program: value.program[i],
+          academic: value.academic,
+          start_date: value.start_date,
+          end_date: intake_end_date,
+          registration_deadline: value.registration_deadline,
+          admission_fee: value.admission_fee,
+          student_per_batch: value.student_per_batch,
+          max_student_enrollment: value.max_student_enrollment,
+        });
+      }
+      const data = await intake_service.create_many(payload);
       return success_response(res, {
         status: 200,
         message: "Intake created successfully",
