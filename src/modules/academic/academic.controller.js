@@ -116,6 +116,7 @@ class academic_controller {
         });
       }
       const data = await academic_service.update(id, value);
+      //TODO: copy intakes also
       return success_response(res, {
         status: 200,
         message: "Academic updated successfully",
