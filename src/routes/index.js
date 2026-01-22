@@ -10,6 +10,7 @@ const program_route = require("../modules/program/program.routes");
 const intake_route = require("../modules/intake/intake.routes");
 const application_route = require("../modules/application/application.routes");
 const payment_route = require("../modules/payment/payment.routes");
+const academic_route = require("../modules/academic/academic.routes");
 const { verify_jwt } = require("../middlewares/auth.middleware");
 const { validate_api_key } = require("../middlewares/apikey.middleware");
 
@@ -35,5 +36,7 @@ router.use("/program", program_route);
 router.use("/intake", intake_route);
 //* Application management routes
 router.use("/application", application_route);
+//* Academic management routes
+router.use("/academic", academic_route);
 
 module.exports = router;

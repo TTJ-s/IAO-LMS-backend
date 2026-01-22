@@ -4,6 +4,10 @@ const intake_schema = new mongoose.Schema(
   {
     uid: { type: String, trim: true },
     name: { type: String, trim: true },
+    academic: {
+      type: mongoose.Types.ObjectId,
+      ref: "Academic",
+    },
     program: {
       type: mongoose.Types.ObjectId,
       ref: "Program",
@@ -20,10 +24,11 @@ const intake_schema = new mongoose.Schema(
       default: "open",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 intake_schema.index({ name: 1 });
+intake_schema.index({ academic: 1 });
 intake_schema.index({ program: 1 });
 intake_schema.index({ status: 1 });
 

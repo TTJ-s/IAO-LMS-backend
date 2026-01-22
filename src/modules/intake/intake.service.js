@@ -1,9 +1,19 @@
-const { Intake, Batch, Application } = require("../../models");
+const { Intake, Batch, Application, Program } = require("../../models");
 const { mask_user_contact } = require("../../utils/mask.util");
 
 class intake_service {
   async create(payload) {
     const data = Intake.create(payload);
+    return data;
+  }
+
+  async create_many(payload) {
+    const data = Intake.insertMany(payload);
+    return data;
+  }
+
+  async find_program_by_id(id) {
+    const data = await Program.findById(id);
     return data;
   }
 
@@ -265,6 +275,12 @@ class intake_service {
       enrolled_date: student?.batch?.createdAt,
     };
     return data;
+  }
+
+  async generate_intake_name(program_name, start_date, end_date) {
+    const start_year = moment(start_date).year();
+    const end_year = moment(end_date).year();
+    return `${program_name}, ${start_year}-${end_year}`;
   }
 }
 

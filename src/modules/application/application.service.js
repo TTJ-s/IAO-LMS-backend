@@ -84,6 +84,7 @@ class application_service {
       decision_date: app.decision_date,
       payment_amount: app.payment_amount,
       payment_status: app.payment_status,
+      createdAt: app.createdAt,
       user: {
         first_name: app.user.first_name,
         last_name: app.user.last_name,
