@@ -1,3 +1,4 @@
+const Academic = require("./academic.model");
 const Application = require("./application.model");
 const Batch = require("./batch.model");
 const City = require("./city.model");
@@ -22,4 +23,5 @@ module.exports = {
   Application,
   Batch,
   Payment,
+  Academic,
 };
