@@ -1,16 +1,16 @@
-const validation = require("./teacher-title.validation");
-const teacher_title_service = require("./teacher-title.service");
+const validation = require("./teacher-role.validation");
+const teacher_role_service = require("./teacher-role.service");
 const logger = require("../../../utils/logger");
 const { error_response, success_response } = require("../../../utils/response");
 
-class teacher_title_controller {
-  async create_teacher_title(req, res) {
+class teacher_role_controller {
+  async create_teacher_role(req, res) {
     try {
       const { error, value } =
-        validation.create_teacher_title_validation.validate(req.body);
+        validation.create_teacher_role_validation.validate(req.body);
       if (error) {
         logger.warn({
-          context: "teacher-title.controller.create_teacher_title",
+          context: "teacher-role.controller.create_teacher_role",
           message: error.details[0].message,
           errors: error.details,
         });
@@ -22,30 +22,30 @@ class teacher_title_controller {
         });
       }
 
-      const existing_teacher_title = await teacher_title_service.find_by_name(
-        value.teacher_title_name,
+      const existing_teacher_role = await teacher_role_service.find_by_name(
+        value.teacher_role_name,
       );
-      if (existing_teacher_title) {
+      if (existing_teacher_role) {
         logger.warn({
-          context: "teacher-title.controller.create_teacher_title",
-          message: "Teacher title already exists",
+          context: "teacher-role.controller.create_teacher_role",
+          message: "Teacher role already exists",
         });
 
         return error_response(res, {
           status: 400,
-          message: "Teacher title already exists",
+          message: "Teacher role already exists",
         });
       }
 
-      const teacher_title = await teacher_title_service.create(value);
+      const teacher_role = await teacher_role_service.create(value);
       return success_response(res, {
         status: 200,
-        message: "Teacher title created successfully",
-        data: teacher_title,
+        message: "Teacher role created successfully",
+        data: teacher_role,
       });
     } catch (error) {
       logger.error({
-        context: "teacher-title.controller.create_teacher_title",
+        context: "teacher-role.controller.create_teacher_role",
         message: error.message,
         errors: error.stack,
       });
@@ -58,7 +58,7 @@ class teacher_title_controller {
     }
   }
 
-  async get_teacher_titles(req, res) {
+  async get_teacher_roles(req, res) {
     try {
       const { page = 1, limit = 10 } = req.query;
       const filters = {};
@@ -68,18 +68,18 @@ class teacher_title_controller {
       };
       const sort = {};
       const [data, total_count] = await Promise.all([
-        teacher_title_service.find_all(filters, options, sort),
-        teacher_title_service.total_count(filters),
+        teacher_role_service.find_all(filters, options, sort),
+        teacher_role_service.total_count(filters),
       ]);
       return success_response(res, {
         status: 200,
-        message: "Teacher titles fetched successfully",
+        message: "Teacher roles fetched successfully",
         data,
         total_count,
       });
     } catch (error) {
       logger.error({
-        context: "teacher-title.controller.get_teacher_titles",
+        context: "teacher-role.controller.get_teacher_roles",
         message: error.message,
         errors: error.stack,
       });
@@ -92,13 +92,13 @@ class teacher_title_controller {
     }
   }
 
-  async update_teacher_title(req, res) {
+  async update_teacher_role(req, res) {
     try {
       const { error, value } =
-        validation.update_teacher_title_validation.validate(req.body);
+        validation.update_teacher_role_validation.validate(req.body);
       if (error) {
         logger.warn({
-          context: "teacher-title.controller.update_teacher_title",
+          context: "teacher-role.controller.update_teacher_role",
           message: error.details[0].message,
           errors: error.details,
         });
@@ -113,18 +113,18 @@ class teacher_title_controller {
       if (!id) {
         return error_response(res, {
           status: 400,
-          message: "Teacher title ID is required",
+          message: "Teacher role ID is required",
         });
       }
-      const teacher_title = await teacher_title_service.update(id, value);
+      const teacher_role = await teacher_role_service.update(id, value);
       return success_response(res, {
         status: 200,
-        message: "Teacher title updated successfully",
-        data: teacher_title,
+        message: "Teacher role updated successfully",
+        data: teacher_role,
       });
     } catch (error) {
       logger.error({
-        context: "teacher-title.controller.update_teacher_title",
+        context: "teacher-role.controller.update_teacher_role",
         message: error.message,
         errors: error.stack,
       });
@@ -137,24 +137,24 @@ class teacher_title_controller {
     }
   }
 
-  async delete_teacher_title(req, res) {
+  async delete_teacher_role(req, res) {
     try {
       const { id } = req.params;
       if (!id) {
         return error_response(res, {
           status: 400,
-          message: "Teacher title ID is required",
+          message: "Teacher role ID is required",
         });
       }
-      const data = await teacher_title_service.delete(id);
+      const data = await teacher_role_service.delete(id);
       return success_response(res, {
         status: 200,
-        message: "Teacher title deleted successfully",
+        message: "Teacher role deleted successfully",
         data,
       });
     } catch (error) {
       logger.error({
-        context: "teacher-title.controller.delete_teacher_title",
+        context: "teacher-role.controller.delete_teacher_role",
         message: error.message,
         errors: error.stack,
       });
@@ -168,4 +168,4 @@ class teacher_title_controller {
   }
 }
 
-module.exports = new teacher_title_controller();
+module.exports = new teacher_role_controller();
