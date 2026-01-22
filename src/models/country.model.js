@@ -7,7 +7,7 @@ const country_schema = new mongoose.Schema(
     currency: { type: String, trim: true, uppercase: true },
     status: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   { timestamps: true }
