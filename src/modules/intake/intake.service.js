@@ -276,6 +276,12 @@ class intake_service {
     };
     return data;
   }
+
+  async generate_intake_name(program_name, start_date, end_date) {
+    const start_year = moment(start_date).year();
+    const end_year = moment(end_date).year();
+    return `${program_name}, ${start_year}-${end_year}`;
+  }
 }
 
 module.exports = new intake_service();

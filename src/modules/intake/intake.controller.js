@@ -46,8 +46,14 @@ class intake_controller {
           .tz(value.start_date, "YYYY-MM-DD", "UTC")
           .add(program.year, "years")
           .format("YYYY-MM-DD");
+        const name = intake_service.generate_intake_name(
+          program.name,
+          value.start_date,
+          intake_end_date,
+        );
         payload.push({
           uid,
+          name,
           program: value.program[i],
           academic: value.academic,
           start_date: value.start_date,
