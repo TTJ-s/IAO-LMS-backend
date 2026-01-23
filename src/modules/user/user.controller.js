@@ -383,6 +383,42 @@ class user_controller {
       });
     }
   }
+
+  async get_teacher(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Teacher ID is required",
+        });
+      }
+      const data = await user_service.find_teacher_by_id(id);
+      if (!data) {
+        return error_response(res, {
+          status: 404,
+          message: "Teacher not found",
+        });
+      }
+      return success_response(res, {
+        status: 200,
+        message: "Teacher fetched successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "user.controller.get_teacher",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
 }
 
 module.exports = new user_controller();

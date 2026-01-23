@@ -28,6 +28,12 @@ router.post(
   user_controller.bulk_delete_admins,
 );
 
+router.get(
+  "/teacher/:id",
+  rate_limit(PRESETS.public),
+  user_controller.get_teacher,
+);
+
 router.patch(
   "/:id/status",
   rate_limit(PRESETS.api),
