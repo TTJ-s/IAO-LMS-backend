@@ -2,6 +2,7 @@ const Academic = require("./academic.model");
 const Application = require("./application.model");
 const Batch = require("./batch.model");
 const City = require("./city.model");
+const Component = require("./components.model");
 const Counter = require("./counter.model");
 const Country = require("./country.model");
 const Intake = require("./intake.model");
@@ -28,4 +29,5 @@ module.exports = {
   Academic,
   TeacherTitle,
   TeacherRole,
+  Component,
 };
