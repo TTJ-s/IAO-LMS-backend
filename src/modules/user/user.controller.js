@@ -361,6 +361,9 @@ class user_controller {
           language: user.language,
           qualification: user.qualification,
           status: user.status,
+          iao_employment_start_date: user.iao_employment_start_date,
+          academic_degree: user.academic_degree,
+          teacher_role: user.teacher_role,
         };
       });
       return success_response(res, {
