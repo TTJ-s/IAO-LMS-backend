@@ -8,7 +8,7 @@ class program_controller {
   async create(req, res) {
     try {
       const { error, value } = validation.create_program_validation.validate(
-        req.body
+        req.body,
       );
       if (error) {
         logger.warn({
@@ -25,7 +25,7 @@ class program_controller {
       }
 
       const existing_program = await program_service.find_by_name(
-        value.program_name
+        value.program_name,
       );
       if (existing_program) {
         logger.warn({
@@ -226,7 +226,7 @@ class program_controller {
         });
       }
       const { error, value } = validation.update_program_validation.validate(
-        req.body
+        req.body,
       );
       if (error) {
         logger.warn({
