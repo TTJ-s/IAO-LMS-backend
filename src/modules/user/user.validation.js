@@ -26,8 +26,14 @@ exports.create_teacher_validation = Joi.object({
   phone: Joi.string().required(),
   location: Joi.array().items(Joi.string()).required(),
   language: Joi.array().items(Joi.string()).required(),
-  qualification: Joi.string().required(),
-  teacher_title: Joi.string().required(),
+  academic_degree: Joi.string().required(),
   teacher_role: Joi.string().required(),
+  iao_employment_start_date: Joi.string()
+    .pattern(/^\d{4}-\d{2}-\d{2}$/)
+    .required()
+    .messages({
+      "string.pattern.base":
+        "IAO employment start date must be in YYYY-MM-DD format.",
+    }),
   status: Joi.boolean(),
 });

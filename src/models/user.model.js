@@ -63,7 +63,7 @@ const user_schema = new mongoose.Schema(
     location: [
       {
         type: mongoose.Types.ObjectId,
-        ref: "Location",
+        ref: "City",
       },
     ], //* Used for teachers
     language: [
@@ -72,9 +72,9 @@ const user_schema = new mongoose.Schema(
         ref: "Language",
       },
     ], //* Used for teachers
-    teacher_title: { type: mongoose.Types.ObjectId, ref: "TeacherTitle" }, //* Used for teachers
+    academic_degree: { type: mongoose.Types.ObjectId, ref: "TeacherTitle" }, //* Used for teachers
     teacher_role: { type: mongoose.Types.ObjectId, ref: "TeacherRole" }, //* Used for teachers
-    qualification: { type: String, trim: true }, //* Used for teachers
+    iao_employment_start_date: { type: Date }, //* Used for teachers
   },
   { timestamps: true },
 );
