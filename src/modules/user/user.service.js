@@ -14,7 +14,7 @@ class user_service {
       .skip(skip)
       .limit(limit)
       .sort(sort)
-      .populate("role_access");
+      .populate("role_access").populate("academic_degree").populate("teacher_role").populate("location").populate("language");
     return data;
   }
 

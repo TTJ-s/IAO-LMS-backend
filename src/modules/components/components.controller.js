@@ -2,6 +2,7 @@ const validation = require("./components.validation");
 const components_service = require("./components.service");
 const logger = require("../../utils/logger");
 const { error_response, success_response } = require("../../utils/response");
+const { generate_counter } = require("../../utils/generate_counter");
 
 class components_controller {
   async create_component(req, res) {
@@ -61,6 +62,19 @@ class components_controller {
           value.program,
         );
       }
+
+      // Generate UID based on component type
+      const type_prefixes = {
+        module: "MD",
+        app: "AP",
+        resource: "RS",
+        exam: "EX"
+      };
+      
+      const counter = await generate_counter(`component_${type}`);
+      const padded_counter = String(counter).padStart(2, "0");
+      const uid = `${type_prefixes[type]}-${padded_counter}`;
+      value.uid = uid;
 
       const data = await components_service.create(value);
 
@@ -187,7 +201,7 @@ class components_controller {
           errors: error.details,
         });
       }
-      const data = await components_service.update(id, value);
+      const data = await components_service.update_by_id(id, value);
       return success_response(res, {
         status: 200,
         message: "Component updated successfully",

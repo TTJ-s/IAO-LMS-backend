@@ -13,6 +13,10 @@ const counter_schema = new mongoose.Schema(
     batch_sequence_value: { type: Number, default: 0 },
     payment_sequence_value: { type: Number, default: 0 },
     teacher_sequence_value: { type: Number, default: 0 },
+    component_module_sequence_value: { type: Number, default: 0 },
+    component_app_sequence_value: { type: Number, default: 0 },
+    component_resource_sequence_value: { type: Number, default: 0 },
+    component_exam_sequence_value: { type: Number, default: 0 },
   },
   { timestamps: true },
 );
