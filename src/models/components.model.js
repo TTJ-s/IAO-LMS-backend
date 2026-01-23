@@ -25,17 +25,11 @@ const component_schema = new mongoose.Schema(
     currency: { type: String, trim: true },
     submission_deadline: { type: Date }, //* For APP
     instruction: { type: String, trim: true },
-    submissions: [
-      {
-        case_studies: { type: Boolean },
-      },
-      {
-        essays: { type: Boolean },
-      },
-      {
-        internships: { type: Boolean },
-      },
-    ],
+    submissions: {
+      case_studies: { type: Boolean },
+      essays: { type: Boolean },
+      internships: { type: Boolean },
+    },
     status: {
       type: Boolean,
       default: true,

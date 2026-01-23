@@ -16,6 +16,12 @@ const common_fields = {
   status: Joi.boolean(),
 };
 
+const submissions_schema = Joi.object({
+  case_studies: Joi.boolean(),
+  essays: Joi.boolean(),
+  internships: Joi.boolean(),
+}).unknown(false);
+
 exports.create_module_component_validation = Joi.object({
   ...common_fields,
   amount: Joi.number().required(),
@@ -32,13 +38,7 @@ exports.create_app_component_validation = Joi.object({
         "Submission deadline must be in YYYY-MM-DD format.",
     }),
   instruction: Joi.string().required(),
-  submissions: Joi.array()
-    .items(
-      Joi.object({ case_studies: Joi.boolean() }),
-      Joi.object({ essays: Joi.boolean() }),
-      Joi.object({ internships: Joi.boolean() }),
-    )
-    .required(),
+  submissions: submissions_schema,
 });
 
 exports.create_resource_component_validation = Joi.object({
