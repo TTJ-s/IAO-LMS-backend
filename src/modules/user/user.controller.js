@@ -423,6 +423,59 @@ class user_controller {
     }
   }
 
+  async update_teacher(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Teacher ID is required",
+        });
+      }
+      const { error, value } = validation.update_teacher_validation.validate(
+        req.body,
+      );
+      if (error) {
+        logger.warn({
+          context: "user.controller.update_teacher",
+          message: error.details[0].message,
+          errors: error.details,
+        });
+
+        return error_response(res, {
+          status: 400,
+          message: error.details[0].message,
+          errors: error.details,
+        });
+      }
+      const find_teacher = await user_service.find_teacher_by_id(id);
+      if (!find_teacher) {
+        return error_response(res, {
+          status: 404,
+          message: "Teacher not found",
+        });
+      }
+      const data = await user_service.update(id, value);
+      return success_response(res, {
+        status: 200,
+        message: "Teacher updated successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "user.controller.update_teacher",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
+
   async delete_teacher(req, res) {
     try {
       const { id } = req.params;

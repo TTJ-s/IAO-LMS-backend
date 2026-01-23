@@ -13,6 +13,7 @@ const payment_route = require("../modules/payment/payment.routes");
 const academic_route = require("../modules/academic/academic.routes");
 const teacher_title_route = require("../modules/master-data/teacher-title/teacher-title.routes");
 const teacher_role_route = require("../modules/master-data/teacher-role/teacher-role.routes");
+const components_routes = require("../modules/components/components.routes");
 const { verify_jwt } = require("../middlewares/auth.middleware");
 const { validate_api_key } = require("../middlewares/apikey.middleware");
 
@@ -42,5 +43,7 @@ router.use("/intake", intake_route);
 router.use("/application", application_route);
 //* Academic management routes
 router.use("/academic", academic_route);
+//* Components management routes
+router.use("/components", components_routes);
 
 module.exports = router;

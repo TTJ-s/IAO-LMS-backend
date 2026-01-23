@@ -31,6 +31,7 @@ router.post(
 router
   .route("/teacher/:id")
   .get(rate_limit(PRESETS.public), user_controller.get_teacher)
+  .put(rate_limit(PRESETS.api), user_controller.update_teacher)
   .delete(rate_limit(PRESETS.api), user_controller.delete_teacher);
 
 router.patch(
