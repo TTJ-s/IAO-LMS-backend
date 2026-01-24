@@ -181,6 +181,36 @@ class city_controller {
       });
     }
   }
+
+  async get_cities_dropdown(req, res) {
+    try {
+      const { country } = req.query;
+      const filters = { status: true };
+
+      if (country) {
+        filters.country = country;
+      }
+
+      const data = await city_service.find_for_dropdown(filters);
+      return success_response(res, {
+        status: 200,
+        message: "Cities dropdown fetched successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "city.controller.get_cities_dropdown",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
 }
 
 module.exports = new city_controller();

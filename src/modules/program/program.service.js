@@ -71,6 +71,10 @@ class program_service {
     const data = await Program.countDocuments(filters);
     return data;
   }
+  async find_for_dropdown(filters = { status: true }) {
+    const data = await Program.find(filters).select("name").sort({ name: 1 });
+    return data;
+  }
 }
 
 module.exports = new program_service();

@@ -48,6 +48,12 @@ class teacher_role_service {
     const data = await TeacherRole.countDocuments(filters);
     return data;
   }
+  async find_for_dropdown(filters = { status: true }) {
+    const data = await TeacherRole.find(filters)
+      .select("name")
+      .sort({ name: 1 });
+    return data;
+  }
 }
 
 module.exports = new teacher_role_service();

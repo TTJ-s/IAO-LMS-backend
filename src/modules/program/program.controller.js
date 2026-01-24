@@ -275,6 +275,29 @@ class program_controller {
       });
     }
   }
+  async get_program_dropdown(req, res) {
+    try {
+      const filters = { status: true };
+      const data = await program_service.find_for_dropdown(filters);
+      return success_response(res, {
+        status: 200,
+        message: "Program fetched successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "program.controller.get_program_dropdown",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
 }
 
 module.exports = new program_controller();

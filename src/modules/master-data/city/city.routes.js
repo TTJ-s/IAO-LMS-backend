@@ -12,6 +12,10 @@ router
   .get(rate_limit(PRESETS.public), city_controller.get_cities);
 
 router
+  .route("/dropdown")
+  .get(rate_limit(PRESETS.public), city_controller.get_cities_dropdown);
+
+router
   .route("/:id")
   .put(rate_limit(PRESETS.api), city_controller.update_city)
   .delete(rate_limit(PRESETS.api), city_controller.delete_city);

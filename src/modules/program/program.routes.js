@@ -12,6 +12,10 @@ router
   .get(rate_limit(PRESETS.public), program_controller.get_programs);
 
 router
+  .route("/dropdown")
+  .get(rate_limit(PRESETS.public), program_controller.get_program_dropdown);
+
+router
   .route("/:id")
   .get(rate_limit(PRESETS.public), program_controller.get_program)
   .patch(rate_limit(PRESETS.api), program_controller.duplicate_program)
