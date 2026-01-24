@@ -44,6 +44,7 @@ class program_service {
     if (components.length > 0) {
       const types = [...new Set(components.map((item) => item.type))];
       data.types = types;
+      data.components_count = components.length;
     }
     return data;
   }
