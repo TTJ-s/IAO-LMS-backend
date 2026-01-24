@@ -1,4 +1,4 @@
-const { Program } = require("../../models");
+const { Program, Component } = require("../../models");
 
 class program_service {
   async create(payload) {
@@ -38,7 +38,18 @@ class program_service {
         populate: {
           path: "country",
         },
-      });
+      })
+      .lean();
+    const components = await this.find_components_by_program_id(id);
+    if (components.length > 0) {
+      const types = [...new Set(components.map((item) => item.type))];
+      data.types = types;
+    }
+    return data;
+  }
+
+  async find_components_by_program_id(id) {
+    const data = await Component.find({ program: id });
     return data;
   }
 
@@ -51,13 +62,18 @@ class program_service {
     const data = await Program.findByIdAndUpdate(
       id,
       { status: false },
-      { new: true }
+      { new: true },
     );
     return data;
   }
 
   async total_count(filters = {}) {
     const data = await Program.countDocuments(filters);
+    return data;
+  }
+
+  async duplicate_component(payload) {
+    const data = await Component.insertMany(payload);
     return data;
   }
 }
