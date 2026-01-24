@@ -1,6 +1,7 @@
 const moment = require("moment-timezone");
 const { Intake, Batch, Application, Program } = require("../../models");
 const { mask_user_contact } = require("../../utils/mask.util");
+const { generate_counter } = require("../../utils/generate_counter");
 
 class intake_service {
   async create(payload) {
@@ -10,7 +11,51 @@ class intake_service {
 
   async create_many(payload) {
     const data = await Intake.insertMany(payload);
+    const batch_payloads = [];
+    for (const intake of data) {
+      const batch_count = 1; //* First batch
+      const batch_name = this.create_batch_name(
+        intake.name,
+        intake.start_date,
+        intake.end_date,
+        batch_count,
+      );
+
+      const counter = await generate_counter("batch");
+      const padded_counter = String(counter).padStart(2, "0");
+      const batch_uid = `B-${padded_counter}`;
+
+      batch_payloads.push({
+        uid: batch_uid,
+        name: batch_name,
+        intake: intake._id,
+        student_count: 0,
+        is_full_filled: false,
+        status: "open",
+      });
+    }
+    if (batch_payloads.length > 0) {
+      await Batch.insertMany(batch_payloads);
+    }
     return data;
+  }
+
+  create_batch_name(intake_name, start_date, end_date, count) {
+    //* Extract year from date using moment
+    const extract_year = (date) => {
+      return moment(date).year();
+    };
+
+    //* Convert count to letter (1=A, 2=B, 3=C, etc.)
+    const count_to_letter = (count) => {
+      return String.fromCharCode(64 + count); //* A=65, B=66, etc.
+    };
+
+    const start_year = extract_year(start_date);
+    const end_year = extract_year(end_date);
+    const letter = count_to_letter(count);
+
+    return `${start_year}-${end_year} ${intake_name}-${letter}`;
   }
 
   async find_program_by_id(id) {

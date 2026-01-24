@@ -96,6 +96,46 @@ class program_controller {
       };
 
       const data = await program_service.create(payload);
+      const components =
+        await program_service.find_components_by_program_id(id);
+      if (components.length > 0) {
+        const payload = [];
+        for (let i = 0; i < components.length; i++) {
+          const type_prefixes = {
+            module: "MD",
+            app: "AP",
+            resource: "RS",
+            exam: "EX",
+          };
+
+          const counter = await generate_counter(
+            `component_${components[i].type}`,
+          );
+          const padded_counter = String(counter).padStart(2, "0");
+          const uid = `${type_prefixes[components[i].type]}-${padded_counter}`;
+
+          const component_data = {
+            program: data._id,
+            uid: uid,
+            type: components[i].type,
+            name: components[i].name,
+            year: components[i].year,
+            files: components[i].files,
+            status: components[i].status,
+          };
+          if (components[i].type === "module") {
+            component_data.amount = components[i].amount;
+            component_data.currency = components[i].currency;
+          } else if (components[i].type === "app") {
+            component_data.submission_deadline =
+              components[i].submission_deadline;
+            component_data.instruction = components[i].instruction;
+            component_data.submissions = components[i].submissions;
+          }
+          payload.push(component_data);
+        }
+        await program_service.duplicate_component(payload);
+      }
       return success_response(res, {
         status: 201,
         message: "Program created successfully",

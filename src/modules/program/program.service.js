@@ -44,6 +44,7 @@ class program_service {
     if (components.length > 0) {
       const types = [...new Set(components.map((item) => item.type))];
       data.types = types;
+      data.components_count = components.length;
     }
     return data;
   }
@@ -69,6 +70,11 @@ class program_service {
 
   async total_count(filters = {}) {
     const data = await Program.countDocuments(filters);
+    return data;
+  }
+
+  async duplicate_component(payload) {
+    const data = await Component.insertMany(payload);
     return data;
   }
   async find_for_dropdown(filters = { status: true }) {
