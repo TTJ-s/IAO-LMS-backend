@@ -44,6 +44,11 @@ class language_service {
     const data = await Language.countDocuments(filters);
     return data;
   }
+
+  async find_for_dropdown(filters = { status: true }) {
+    const data = await Language.find(filters).select("name").sort({ name: 1 });
+    return data;
+  }
 }
 
 module.exports = new language_service();

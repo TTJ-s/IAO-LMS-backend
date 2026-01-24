@@ -13,6 +13,10 @@ router
   .get(rate_limit(PRESETS.public), language_controller.get_languages);
 
 router
+  .route("/dropdown")
+  .get(rate_limit(PRESETS.public), language_controller.get_language_dropdown);
+
+router
   .route("/:id")
   .put(rate_limit(PRESETS.api), language_controller.update_language)
   .delete(rate_limit(PRESETS.api), language_controller.delete_language);
