@@ -194,6 +194,29 @@ class role_controller {
       });
     }
   }
+  async get_role_dropdown(req, res) {
+    try {
+      const filters = { status: true };
+      const data = await role_service.find_for_dropdown(filters);
+      return success_response(res, {
+        status: 200,
+        message: "Role fetched successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "role.controller.get_role_dropdown",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
 }
 
 module.exports = new role_controller();

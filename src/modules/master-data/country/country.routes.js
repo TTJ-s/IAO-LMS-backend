@@ -12,6 +12,10 @@ router
   .get(rate_limit(PRESETS.public), country_controller.get_countries);
 
 router
+  .route("/dropdown")
+  .get(rate_limit(PRESETS.public), country_controller.get_countries_dropdown);
+
+router
   .route("/:id")
   .put(rate_limit(PRESETS.api), country_controller.update_country)
   .delete(rate_limit(PRESETS.api), country_controller.delete_country);

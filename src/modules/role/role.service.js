@@ -36,6 +36,10 @@ class role_service {
     const data = await User.find({ role_access: id });
     return data;
   }
+  async find_for_dropdown(filters = { status: true }) {
+    const data = await Role.find(filters).select("name").sort({ name: 1 });
+    return data;
+  }
 }
 
 module.exports = new role_service();

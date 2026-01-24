@@ -43,6 +43,11 @@ class country_service {
     const data = await Country.countDocuments(filters);
     return data;
   }
+
+  async find_for_dropdown(filters = { status: true }) {
+    const data = await Country.find(filters).select("name").sort({ name: 1 });
+    return data;
+  }
 }
 
 module.exports = new country_service();

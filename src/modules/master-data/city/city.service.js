@@ -50,6 +50,11 @@ class city_service {
     const data = await City.countDocuments(filters);
     return data;
   }
+
+  async find_for_dropdown(filters = { status: true }) {
+    const data = await City.find(filters).select("name").sort({ name: 1 });
+    return data;
+  }
 }
 
 module.exports = new city_service();

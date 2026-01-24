@@ -12,6 +12,13 @@ router
   .get(rate_limit(PRESETS.public), teacher_role_controller.get_teacher_roles);
 
 router
+  .route("/dropdown")
+  .get(
+    rate_limit(PRESETS.public),
+    teacher_role_controller.get_teacher_role_dropdown,
+  );
+
+router
   .route("/:id")
   .put(rate_limit(PRESETS.api), teacher_role_controller.update_teacher_role)
   .delete(rate_limit(PRESETS.api), teacher_role_controller.delete_teacher_role);
