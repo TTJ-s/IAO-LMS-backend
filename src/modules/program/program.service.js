@@ -71,6 +71,11 @@ class program_service {
     const data = await Program.countDocuments(filters);
     return data;
   }
+
+  async duplicate_component(payload) {
+    const data = await Component.insertMany(payload);
+    return data;
+  }
 }
 
 module.exports = new program_service();

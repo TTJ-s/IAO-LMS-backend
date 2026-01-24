@@ -15,7 +15,6 @@ class academic_service {
   }
 
   async duplicate_intakes(payload) {
-    //TODO: duplicate modules also
     const data = await Intake.insertMany(payload);
     return data;
   }
@@ -42,10 +41,18 @@ class academic_service {
     return await Academic.findByIdAndDelete(id);
   }
 
-  async find_intakes_list_by_academic_id(filters = {}, options = {}, sort = {}) {
+  async find_intakes_list_by_academic_id(
+    filters = {},
+    options = {},
+    sort = {},
+  ) {
     const { page = 1, limit = 10 } = options;
     const skip = (page - 1) * limit;
-    const data = await Intake.find(filters).sort(sort).skip(skip).limit(limit).populate("program", "name");
+    const data = await Intake.find(filters)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
+      .populate("program", "name");
     return data;
   }
 

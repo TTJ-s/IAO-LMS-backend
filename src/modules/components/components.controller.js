@@ -107,10 +107,12 @@ class components_controller {
           message: "Type is required",
         });
       }
-      const { page = 1, limit = 10 } = req.query;
+      const { page = 1, limit = 10, program, status } = req.query;
       const filters = {
         type,
       };
+      if (program) filters.program = program;
+      if (status) filters.status = status;
       const options = {
         page,
         limit,
