@@ -6,7 +6,7 @@ const { error_response } = require("../utils/response");
 //* For production with multiple instances, use Redis
 const rate_limit_store = new Map();
 
-//* Clean up old entries every 5 minutes
+//* Clean up old entries every 3 minutes
 setInterval(() => {
   const now = Date.now();
   for (const [key, value] of rate_limit_store.entries()) {
@@ -15,7 +15,7 @@ setInterval(() => {
       rate_limit_store.delete(key);
     }
   }
-}, 5 * 60 * 1000);
+}, 3 * 60 * 1000);
 
 //* Rate limiting options
 const DEFAULT_OPTIONS = {
@@ -153,9 +153,9 @@ const PRESETS = {
 
   //* OTP endpoints
   otp: {
-    window_size_ms: 5 * 60 * 1000, //* 5 minutes
-    max_requests: 5,
-    message: "Too many OTP requests. Please try again in 5 minutes.",
+    window_size_ms: 3 * 60 * 1000, //* 5 minutes
+    max_requests: 6,
+    message: "Too many OTP requests. Please try again in 3 minutes.",
   },
 
   //* API endpoints
