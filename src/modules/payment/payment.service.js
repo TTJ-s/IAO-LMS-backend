@@ -64,7 +64,7 @@ class payment_service {
   async update_application_status(id, status) {
     const data = await Application.findByIdAndUpdate(
       id,
-      { payment_status: status },
+      { payment_status: status, status: "pending" },
       { new: true },
     );
     return data;
