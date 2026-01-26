@@ -2,7 +2,7 @@ const { City } = require("../../../models");
 
 class city_service {
   async create(payload) {
-    const data = City.create(payload);
+    const data = await City.create(payload);
     return data;
   }
 

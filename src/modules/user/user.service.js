@@ -3,7 +3,7 @@ const { mask_user_contact } = require("../../utils/mask.util");
 
 class user_service {
   async create(payload) {
-    const data = User.create(payload);
+    const data = await User.create(payload);
     return data;
   }
 
