@@ -4,7 +4,7 @@ exports.create_application_validation = Joi.object({
   intake: Joi.string().required(),
   id_card: Joi.object({
     url: Joi.string().required(),
-  }),
+  }).required(),
   qualification_certificate: Joi.object({
     url: Joi.string(),
   }),
