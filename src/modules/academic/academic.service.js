@@ -1,4 +1,4 @@
-const { Intake, Academic } = require("../../models");
+const { Intake, Academic, Program, Batch } = require("../../models");
 
 class academic_service {
   async create(data) {
@@ -29,8 +29,38 @@ class academic_service {
     const data = await Academic.find(filters)
       .skip(skip)
       .limit(limit)
-      .sort(sort);
-    return data;
+      .sort(sort)
+      .lean();
+    const academic_ids = data.map((academic) => academic._id);
+    const intakes = await Intake.find({
+      academic: { $in: academic_ids },
+    }).lean();
+    const intake_ids = intakes.map((intake) => intake._id);
+    const batches = await Batch.find({ intake: { $in: intake_ids } }).lean();
+    const enriched_data = data.map((academic) => {
+      const academic_intakes = intakes.filter(
+        (intake) => intake.academic.toString() === academic._id.toString(),
+      );
+
+      const academic_intake_ids = academic_intakes.map((intake) =>
+        intake._id.toString(),
+      );
+      const academic_batches = batches.filter((batch) =>
+        academic_intake_ids.includes(batch.intake.toString()),
+      );
+
+      const unique_programs = [
+        ...new Set(academic_intakes.map((intake) => intake.program.toString())),
+      ];
+
+      return {
+        ...academic,
+        programs_count: unique_programs.length,
+        batches_count: academic_batches.length,
+      };
+    });
+
+    return enriched_data;
   }
 
   async update(id, data) {
