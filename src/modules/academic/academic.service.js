@@ -55,8 +55,8 @@ class academic_service {
 
       return {
         ...academic,
-        program_count: unique_programs.length,
-        batch_count: academic_batches.length,
+        programs_count: unique_programs.length,
+        batches_count: academic_batches.length,
       };
     });
 
