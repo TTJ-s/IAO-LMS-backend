@@ -208,8 +208,8 @@ class intake_service {
         first_name: app.user.first_name,
         last_name: app.user.last_name,
         ...mask_user_contact(app.user),
-        batch_name: app.batch.name,
-        enrolled_date: app.batch.createdAt,
+        batch_name: app.batch?.name,
+        enrolled_date: app.batch?.createdAt,
         status: app.user.status,
       };
     });
