@@ -127,16 +127,66 @@ class payment_controller {
   async webhook(req, res) {
     try {
       const { id } = req.body;
-      const mollie_payment = await payment_service.get_mollie_payment(id);
+
+      //* Validate payment ID format (Mollie IDs start with 'tr_')
+      if (!id || typeof id !== "string" || !id.startsWith("tr_")) {
+        logger.warn({
+          context: "payment.controller.webhook",
+          message: "Invalid payment ID format",
+          received_id: id,
+          ip: req.ip,
+        });
+        return error_response(res, {
+          status: 400,
+          message: "Invalid payment ID",
+        });
+      }
+
+      //* Fetch payment from Mollie API (this is the source of truth)
+      let mollie_payment;
+      try {
+        mollie_payment = await payment_service.get_mollie_payment(id);
+      } catch (mollie_error) {
+        //* If Mollie returns 404, payment doesn't exist on their end
+        logger.warn({
+          context: "payment.controller.webhook",
+          message: "Failed to fetch payment from Mollie",
+          payment_id: id,
+          error: mollie_error.message,
+        });
+        return error_response(res, {
+          status: 404,
+          message: "Payment not found in payment provider",
+        });
+      }
+
+      //* Verify the payment exists in our database
       const payment = await payment_service.find_by_transaction_id(id);
       if (!payment) {
         logger.warn({
           context: "payment.controller.webhook",
-          message: "Payment not found",
+          message: "Payment not found in database",
+          payment_id: id,
+        });
+        //* Return 200 to prevent Mollie from retrying (payment may have been deleted)
+        return success_response(res, {
+          status: 200,
+          message: "Payment acknowledged",
+        });
+      }
+
+      //* Verify the payment belongs to our application (metadata check)
+      if (mollie_payment.metadata?.user_id !== payment.user?.toString()) {
+        logger.warn({
+          context: "payment.controller.webhook",
+          message: "Payment metadata mismatch - possible tampering",
+          payment_id: id,
+          expected_user: payment.user?.toString(),
+          received_user: mollie_payment.metadata?.user_id,
         });
         return error_response(res, {
-          status: 404,
-          message: "Payment not found",
+          status: 403,
+          message: "Payment verification failed",
         });
       }
       if (mollie_payment.status === "paid") {

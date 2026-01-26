@@ -2,6 +2,13 @@ const mollie = require("../../config/mollie");
 const { Payment, Application } = require("../../models");
 
 class payment_service {
+  //* Build webhook URL with secret token
+  get_webhook_url() {
+    const base_url = process.env.MOLLIE_WEBHOOK_URL;
+    const secret = process.env.MOLLIE_WEBHOOK_SECRET;
+    return `${base_url}/${secret}`;
+  }
+
   async create_mollie_payment(amount, currency, user, purpose, uid) {
     const payment = await mollie.payments.create({
       amount: {
@@ -10,7 +17,7 @@ class payment_service {
       },
       description: `IAO Payment for ${purpose}`,
       redirectUrl: `${process.env.MOLLIE_REDIRECT_URL}/payment-uid/${uid}`,
-      webhookUrl: process.env.MOLLIE_WEBHOOK_URL,
+      webhookUrl: this.get_webhook_url(),
       metadata: {
         user_id: user,
       },
