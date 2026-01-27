@@ -159,7 +159,7 @@ class user_controller {
       return success_response(res, {
         status: 200,
         message: "User status updated successfully",
-        user_obj,
+        data: user_obj,
       });
     } catch (error) {
       logger.error({
