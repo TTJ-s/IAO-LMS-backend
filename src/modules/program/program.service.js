@@ -43,17 +43,10 @@ class program_service {
     };
 
     const data = await Program.find(combined_filters)
-      .populate("language")
-      .populate("city")
-      .populate({
-        path: "city",
-        populate: {
-          path: "country",
-        },
-      })
-      .skip(skip)
-      .limit(limit)
-      .sort(sort);
+      .select("name city language")
+      .populate("city", "name")
+      .populate("language", "name")
+      .sort({ name: 1 });
     return data;
   }
 
