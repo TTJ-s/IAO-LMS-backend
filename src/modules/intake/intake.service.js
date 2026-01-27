@@ -138,6 +138,11 @@ class intake_service {
         },
       },
     });
+
+    if (!intake) {
+      return null;
+    }
+
     const batches = await this.find_batch_by_intake_id(id);
 
     const total_batch_count = batches.length;
@@ -235,6 +240,11 @@ class intake_service {
         select: "name",
       },
     });
+
+    if (!batch) {
+      return null;
+    }
+
     const data = {
       _id: batch._id,
       uid: batch?.uid,
@@ -302,6 +312,11 @@ class intake_service {
         },
       })
       .lean();
+
+    if (!student) {
+      return null;
+    }
+
     const data = {
       uid: student?.user?.uid,
       first_name: student?.user?.first_name,

@@ -3,7 +3,9 @@ const Joi = require("joi");
 exports.create_admin_validation = Joi.object({
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
-  email: Joi.string().required(),
+  email: Joi.string().email().required().messages({
+    "string.email": "Please provide a valid email address",
+  }),
   phone: Joi.string().required(),
   role_access: Joi.string().required(),
 });
@@ -22,7 +24,9 @@ exports.update_profile_validation = Joi.object({
 exports.create_teacher_validation = Joi.object({
   first_name: Joi.string().required(),
   last_name: Joi.string().required(),
-  email: Joi.string().required(),
+  email: Joi.string().email().required().messages({
+    "string.email": "Please provide a valid email address",
+  }),
   phone: Joi.string().required(),
   location: Joi.array().items(Joi.string()).required(),
   language: Joi.array().items(Joi.string()).required(),
@@ -40,7 +44,9 @@ exports.create_teacher_validation = Joi.object({
 exports.update_teacher_validation = Joi.object({
   first_name: Joi.string(),
   last_name: Joi.string(),
-  email: Joi.string(),
+  email: Joi.string().email().messages({
+    "string.email": "Please provide a valid email address",
+  }),
   phone: Joi.string(),
   location: Joi.array().items(Joi.string()),
   language: Joi.array().items(Joi.string()),

@@ -40,6 +40,11 @@ class user_service {
       .populate("language", "name")
       .populate("academic_degree", "name")
       .populate("teacher_role", "name");
+
+    if (!teacher) {
+      return null;
+    }
+
     const data = {
       _id: teacher._id,
       first_name: teacher.first_name,
