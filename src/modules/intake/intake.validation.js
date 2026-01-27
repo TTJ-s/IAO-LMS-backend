@@ -1,7 +1,7 @@
 const Joi = require("joi");
 
 exports.create_intake_validation = Joi.object({
-  name: Joi.string().required(),
+  name: Joi.string(),
   program: Joi.array().required(),
   academic: Joi.string().required(),
   admission_fee: Joi.number().required(),

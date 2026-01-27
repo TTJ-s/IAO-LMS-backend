@@ -48,8 +48,7 @@ class intake_controller {
           .format("YYYY-MM-DD");
         const name = await intake_service.generate_intake_name(
           program.name,
-          value.start_date,
-          intake_end_date,
+          program.city.name,
         );
         payload.push({
           uid,
