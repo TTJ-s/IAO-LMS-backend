@@ -59,7 +59,7 @@ class intake_service {
   }
 
   async find_program_by_id(id) {
-    const data = await Program.findById(id);
+    const data = await Program.findById(id).populate("city", "name");
     return data;
   }
 
@@ -326,10 +326,8 @@ class intake_service {
     return data;
   }
 
-  async generate_intake_name(program_name, start_date, end_date) {
-    const start_year = moment(start_date).year();
-    const end_year = moment(end_date).year();
-    return `${program_name}, ${start_year}-${end_year}`;
+  async generate_intake_name(program_name, city_name) {
+    return `${city_name} ${program_name}`;
   }
 }
 
