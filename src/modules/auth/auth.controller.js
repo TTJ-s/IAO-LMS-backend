@@ -109,7 +109,7 @@ class auth_controller {
           message: "Email is required",
         });
       }
-      let user = await auth_service.find_by_email(email);
+      let user = await auth_service.find_by_email_and_role(email, "student");
       if (!user) {
         const payload = {
           email,
@@ -282,7 +282,8 @@ class auth_controller {
         });
       }
 
-      const otp_age_minutes = (Date.now() - new Date(otp_created_at).getTime()) / 1000 / 60;
+      const otp_age_minutes =
+        (Date.now() - new Date(otp_created_at).getTime()) / 1000 / 60;
       if (isNaN(otp_age_minutes) || otp_age_minutes > 10) {
         logger.warn({
           context: "auth.controller.login",
