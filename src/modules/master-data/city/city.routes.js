@@ -4,6 +4,7 @@ const {
   rate_limit,
   PRESETS,
 } = require("../../../middlewares/ratelimit.middleware");
+const { validate_object_id } = require("../../../middlewares/objectid.middleware");
 const router = express.Router();
 
 router
@@ -17,7 +18,7 @@ router
 
 router
   .route("/:id")
-  .put(rate_limit(PRESETS.api), city_controller.update_city)
-  .delete(rate_limit(PRESETS.api), city_controller.delete_city);
+  .put(rate_limit(PRESETS.api), validate_object_id(), city_controller.update_city)
+  .delete(rate_limit(PRESETS.api), validate_object_id(), city_controller.delete_city);
 
 module.exports = router;

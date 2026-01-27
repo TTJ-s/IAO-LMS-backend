@@ -4,6 +4,7 @@ const {
   rate_limit,
   PRESETS,
 } = require("../../../middlewares/ratelimit.middleware");
+const { validate_object_id } = require("../../../middlewares/objectid.middleware");
 const router = express.Router();
 
 router
@@ -20,9 +21,10 @@ router
 
 router
   .route("/:id")
-  .put(rate_limit(PRESETS.api), teacher_title_controller.update_teacher_title)
+  .put(rate_limit(PRESETS.api), validate_object_id(), teacher_title_controller.update_teacher_title)
   .delete(
     rate_limit(PRESETS.api),
+    validate_object_id(),
     teacher_title_controller.delete_teacher_title,
   );
 

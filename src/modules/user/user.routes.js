@@ -4,6 +4,10 @@ const {
   rate_limit,
   PRESETS,
 } = require("../../middlewares/ratelimit.middleware");
+const {
+  validate_object_id,
+  validate_object_id_array,
+} = require("../../middlewares/objectid.middleware");
 const router = express.Router();
 
 router
@@ -25,23 +29,25 @@ router.put(
 router.post(
   "/bulk-delete-admins",
   rate_limit(PRESETS.api),
+  validate_object_id_array("ids"),
   user_controller.bulk_delete_admins,
 );
 
 router
   .route("/teacher/:id")
-  .get(rate_limit(PRESETS.public), user_controller.get_teacher)
-  .put(rate_limit(PRESETS.api), user_controller.update_teacher)
-  .delete(rate_limit(PRESETS.api), user_controller.delete_teacher);
+  .get(rate_limit(PRESETS.public), validate_object_id(), user_controller.get_teacher)
+  .put(rate_limit(PRESETS.api), validate_object_id(), user_controller.update_teacher)
+  .delete(rate_limit(PRESETS.api), validate_object_id(), user_controller.delete_teacher);
 
 router.patch(
   "/:id/status",
   rate_limit(PRESETS.api),
+  validate_object_id(),
   user_controller.update_status,
 );
 
 router
   .route("/:id")
-  .delete(rate_limit(PRESETS.api), user_controller.delete_admin);
+  .delete(rate_limit(PRESETS.api), validate_object_id(), user_controller.delete_admin);
 
 module.exports = router;
