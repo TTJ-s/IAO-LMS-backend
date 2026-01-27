@@ -12,6 +12,11 @@ class auth_service {
     return data;
   }
 
+  async find_by_email_and_role(email, role) {
+    const data = await User.findOne({ email, role });
+    return data;
+  }
+
   async create(payload) {
     const data = await User.create(payload);
     return data;
