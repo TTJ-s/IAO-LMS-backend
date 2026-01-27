@@ -4,6 +4,7 @@ const {
   rate_limit,
   PRESETS,
 } = require("../../middlewares/ratelimit.middleware");
+const { validate_object_id } = require("../../middlewares/objectid.middleware");
 const router = express.Router();
 
 router
@@ -17,9 +18,9 @@ router
 
 router
   .route("/:id")
-  .get(rate_limit(PRESETS.public), program_controller.get_program)
-  .patch(rate_limit(PRESETS.api), program_controller.duplicate_program)
-  .put(rate_limit(PRESETS.api), program_controller.update_program)
-  .delete(rate_limit(PRESETS.api), program_controller.delete_program);
+  .get(rate_limit(PRESETS.public), validate_object_id(), program_controller.get_program)
+  .patch(rate_limit(PRESETS.api), validate_object_id(), program_controller.duplicate_program)
+  .put(rate_limit(PRESETS.api), validate_object_id(), program_controller.update_program)
+  .delete(rate_limit(PRESETS.api), validate_object_id(), program_controller.delete_program);
 
 module.exports = router;

@@ -2,7 +2,7 @@ const { Role, User } = require("../../models");
 
 class role_service {
   async create(payload) {
-    const data = Role.create(payload);
+    const data = await Role.create(payload);
     return data;
   }
 

@@ -1,6 +1,8 @@
 //* Standard API response handler
 //* GDPR-safe, consistent, and frontend-friendly
 
+const is_development = process.env.NODE_ENV !== "production";
+
 const success_response = (res, options = {}) => {
   const {
     status = 200,
@@ -24,10 +26,14 @@ const error_response = (res, options = {}) => {
     errors = null,
   } = options;
 
+  //* Only include error details in development mode
+  //* In production, hide stack traces and internal error details
+  const safe_errors = is_development ? errors : undefined;
+
   return res.status(status).json({
     success: false,
     message,
-    errors,
+    ...(safe_errors && { errors: safe_errors }),
   });
 };
 

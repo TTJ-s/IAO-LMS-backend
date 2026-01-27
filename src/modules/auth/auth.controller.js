@@ -268,9 +268,22 @@ class auth_controller {
       }
 
       //* Check OTP expiry (typically 10 minutes)
-      const otp_age_minutes =
-        (Date.now() - user.otp_tracking?.created_at) / 1000 / 60;
-      if (otp_age_minutes > 10) {
+      const otp_created_at = user.otp_tracking?.created_at;
+      if (!otp_created_at) {
+        logger.warn({
+          context: "auth.controller.login",
+          message: "OTP tracking timestamp missing",
+          user_id: user._id,
+        });
+
+        return error_response(res, {
+          status: 401,
+          message: "OTP expired. Request a new one.",
+        });
+      }
+
+      const otp_age_minutes = (Date.now() - new Date(otp_created_at).getTime()) / 1000 / 60;
+      if (isNaN(otp_age_minutes) || otp_age_minutes > 10) {
         logger.warn({
           context: "auth.controller.login",
           message: "OTP expired",
