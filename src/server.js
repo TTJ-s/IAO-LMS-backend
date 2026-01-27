@@ -30,6 +30,7 @@ function validate_env() {
     "MOLLIE_API_KEY",
     "MOLLIE_REDIRECT_URL",
     "MOLLIE_WEBHOOK_URL",
+    "MOLLIE_WEBHOOK_SECRET",
   ];
   const missing = required.filter((key) => !process.env[key]);
 

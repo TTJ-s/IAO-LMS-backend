@@ -5,6 +5,8 @@ const academic_schema = new mongoose.Schema(
     name: { type: String, trim: true },
     registartion_start_date: { type: Date },
     registartion_end_date: { type: Date },
+    start_date: { type: Date },
+    end_date: { type: Date },
     status: {
       type: Boolean,
       default: true,

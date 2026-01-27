@@ -2,7 +2,7 @@ const { Application, Intake, Payment } = require("../../models");
 
 class application_service {
   async create(payload) {
-    const data = Application.create(payload);
+    const data = await Application.create(payload);
     return data;
   }
 

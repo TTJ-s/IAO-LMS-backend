@@ -78,7 +78,11 @@ class program_service {
     return data;
   }
   async find_for_dropdown(filters = { status: true }) {
-    const data = await Program.find(filters).select("name").sort({ name: 1 });
+    const data = await Program.find(filters)
+      .select("name city language")
+      .populate("city", "name")
+      .populate("language", "name")
+      .sort({ name: 1 });
     return data;
   }
 }

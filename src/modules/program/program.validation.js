@@ -2,7 +2,7 @@ const Joi = require("joi");
 
 exports.create_program_validation = Joi.object({
   name: Joi.string().required(),
-  description: Joi.string().required(),
+  description: Joi.string(),
   program_type: Joi.string().required(),
   year: Joi.number().required(),
   city: Joi.string().required(),
