@@ -35,6 +35,7 @@ class auth_controller {
           message: "Admin not found",
         });
       }
+      //TODO: check inactive status
       //* Check if user is locked out from sending OTP
       if (
         user.otp_tracking?.send_locked_until &&
@@ -117,6 +118,7 @@ class auth_controller {
         };
         user = await auth_service.create(payload);
       }
+      //TODO: check inactive status
       //* Check if user is locked out from sending OTP
       if (
         user.otp_tracking?.send_locked_until &&
