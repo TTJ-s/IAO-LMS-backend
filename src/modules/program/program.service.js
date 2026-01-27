@@ -1,4 +1,4 @@
-const { Program, Component } = require("../../models");
+const { Program, Component, Intake } = require("../../models");
 
 class program_service {
   async create(payload) {
@@ -26,6 +26,27 @@ class program_service {
       .skip(skip)
       .limit(limit)
       .sort(sort);
+    return data;
+  }
+
+  async find_programs_with_intakes(filters = {}, options = {}, sort = {}) {
+    const { page = 1, limit = 10 } = options;
+    const skip = (page - 1) * limit;
+
+    const program_ids_with_open_intakes = await Intake.distinct("program", {
+      status: "open",
+    });
+
+    const combined_filters = {
+      ...filters,
+      _id: { $in: program_ids_with_open_intakes },
+    };
+
+    const data = await Program.find(combined_filters)
+      .select("name city language")
+      .populate("city", "name")
+      .populate("language", "name")
+      .sort({ name: 1 });
     return data;
   }
 
