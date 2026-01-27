@@ -58,5 +58,5 @@ exports.update_teacher_validation = Joi.object({
       "string.pattern.base":
         "IAO employment start date must be in YYYY-MM-DD format.",
     }),
-  status: Joi.boolean(),
+  status: Joi.string(),
 });
