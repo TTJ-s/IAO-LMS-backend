@@ -53,7 +53,7 @@ class user_controller {
         first_name: data.first_name,
         last_name: data.last_name,
         status: data.status,
-        role_name: data.role_access.name,
+        role_name: data.role_access?.name || null,
         ...mask_user_contact(data),
       };
       return success_response(res, {
@@ -98,8 +98,8 @@ class user_controller {
           first_name: user.first_name,
           last_name: user.last_name,
           status: user.status,
-          role_name: user.role_access.name,
-          role_id: user.role_access._id,
+          role_name: user.role_access?.name || null,
+          role_id: user.role_access?._id || null,
           ...mask_user_contact(user),
         };
       });
@@ -153,7 +153,7 @@ class user_controller {
         first_name: data.first_name,
         last_name: data.last_name,
         status: data.status,
-        role_name: data.role_access.name,
+        role_name: data.role_access?.name || null,
         ...mask_user_contact(data),
       };
       return success_response(res, {
