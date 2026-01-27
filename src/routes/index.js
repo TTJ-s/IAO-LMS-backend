@@ -14,11 +14,14 @@ const academic_route = require("../modules/academic/academic.routes");
 const teacher_title_route = require("../modules/master-data/teacher-title/teacher-title.routes");
 const teacher_role_route = require("../modules/master-data/teacher-role/teacher-role.routes");
 const components_routes = require("../modules/components/components.routes");
+const program_test_route = require("../modules/program/program.test.routes");
 const { verify_jwt } = require("../middlewares/auth.middleware");
 const { validate_api_key } = require("../middlewares/apikey.middleware");
 
 //* Payment management routes
 router.use("/payment", payment_route);
+//* Test routes (no auth required)
+router.use("/test/program", program_test_route);
 //* Validate API key
 router.use(validate_api_key);
 //* Authentication routes (login, refresh, logout, etc.)
