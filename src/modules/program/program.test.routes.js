@@ -7,6 +7,6 @@ const {
 const router = express.Router();
 router
   .route("/")
-  .get(rate_limit(PRESETS.public), program_controller.get_programs);
+  .get(rate_limit(PRESETS.public), program_controller.get_program_dropdown);
 
 module.exports = router;
