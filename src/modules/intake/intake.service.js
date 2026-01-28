@@ -201,7 +201,7 @@ class intake_service {
       $or: [{ intake: intake_id }, { batch: { $in: batch_ids } }],
       ...filters,
     })
-      .populate("user", "uid first_name last_name phone email status")
+      .populate("user", "uid first_name last_name phone email")
       .populate("batch", "name createdAt")
       .skip(skip)
       .limit(limit)
@@ -215,7 +215,7 @@ class intake_service {
         ...mask_user_contact(app.user),
         batch_name: app.batch?.name,
         enrolled_date: app.batch?.createdAt,
-        status: app.user.status,
+        status: app.status, // Use application status instead of user status
       };
     });
     return data;
