@@ -24,7 +24,7 @@ const planning_schema = new mongoose.Schema(
     venue: { type: String, trim: true },
     status: {
       type: String,
-      enum: ["inactive", "active"],
+      enum: ["inactive", "active", "deleted"],
       default: "active",
     },
   },

@@ -20,6 +20,12 @@ router.get(
 );
 
 router.get(
+  "/batches",
+  rate_limit(PRESETS.public),
+  intake_controller.get_batches_by_program,
+);
+
+router.get(
   "/batches/:id",
   rate_limit(PRESETS.public),
   validate_object_id(),
@@ -56,8 +62,20 @@ router.get(
 
 router
   .route("/:id")
-  .get(rate_limit(PRESETS.public), validate_object_id(), intake_controller.get_intake)
-  .delete(rate_limit(PRESETS.api), validate_object_id(), intake_controller.delete_intake)
-  .put(rate_limit(PRESETS.api), validate_object_id(), intake_controller.update_intake);
+  .get(
+    rate_limit(PRESETS.public),
+    validate_object_id(),
+    intake_controller.get_intake,
+  )
+  .delete(
+    rate_limit(PRESETS.api),
+    validate_object_id(),
+    intake_controller.delete_intake,
+  )
+  .put(
+    rate_limit(PRESETS.api),
+    validate_object_id(),
+    intake_controller.update_intake,
+  );
 
 module.exports = router;
