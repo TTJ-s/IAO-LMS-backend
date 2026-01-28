@@ -145,10 +145,11 @@ class components_controller {
 
   async get_components_dropdown(req, res) {
     try {
-      const { type } = req.query;
+      const { type, program } = req.query;
       const filters = {
         type,
       };
+      if (program) filters.program = program;
       const data = await components_service.find_dropdown(filters);
       return success_response(res, {
         status: 200,
