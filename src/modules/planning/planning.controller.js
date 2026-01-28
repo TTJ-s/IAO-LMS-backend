@@ -3,6 +3,15 @@ const planning_service = require("./planning.service");
 const logger = require("../../utils/logger");
 const { error_response, success_response } = require("../../utils/response");
 
+//* Helper to combine date and time string into a Date object
+const combine_date_time = (date_str, time_str) => {
+  if (!date_str || !time_str) return null;
+  const [hours, minutes] = time_str.split(":").map(Number);
+  const date = new Date(date_str);
+  date.setHours(hours, minutes, 0, 0);
+  return date;
+};
+
 class planning_controller {
   async create_planning(req, res) {
     try {
@@ -23,6 +32,17 @@ class planning_controller {
         });
       }
 
+      //* Transform time strings to Date objects
+      if (value.sessions && Array.isArray(value.sessions)) {
+        value.sessions = value.sessions.map((session) => ({
+          ...session,
+          session_date: session.session_date ? new Date(session.session_date) : null,
+          start_time: combine_date_time(session.session_date, session.start_time),
+          end_time: combine_date_time(session.session_date, session.end_time),
+        }));
+      }
+
+      //TODO: check the planning with those teachers already exists
       const data = await planning_service.create(value);
 
       logger.info({
@@ -184,6 +204,16 @@ class planning_controller {
           status: 404,
           message: "Planning not found",
         });
+      }
+
+      //* Transform time strings to Date objects
+      if (value.sessions && Array.isArray(value.sessions)) {
+        value.sessions = value.sessions.map((session) => ({
+          ...session,
+          session_date: session.session_date ? new Date(session.session_date) : null,
+          start_time: combine_date_time(session.session_date, session.start_time),
+          end_time: combine_date_time(session.session_date, session.end_time),
+        }));
       }
 
       const data = await planning_service.update(id, value);
