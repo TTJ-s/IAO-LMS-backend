@@ -20,7 +20,7 @@ router.get(
 );
 
 router.get(
-  "/batches/:id",
+  "/batches/program/:id",
   rate_limit(PRESETS.public),
   intake_controller.get_batches_by_program,
 );
