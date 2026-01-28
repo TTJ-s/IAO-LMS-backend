@@ -98,8 +98,14 @@ class user_service {
   }
 
   async find_dropdown(filters = {}) {
-    const data = await User.find(filters).select("name");
-    return data;
+    const data = await User.find(filters)
+      .select("first_name last_name")
+      .sort({ first_name: 1, last_name: 1 });
+    const mapped_data = data.map((user) => ({
+      _id: user._id,
+      name: `${user.first_name} ${user.last_name}`.trim(),
+    }));
+    return mapped_data;
   }
 }
 
