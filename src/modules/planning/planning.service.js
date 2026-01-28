@@ -20,6 +20,13 @@ class planning_service {
     const data = await Planning.find(filters)
       .populate("batch")
       .populate("component")
+      .populate({
+        path: "component",
+        populate: {
+          path: "program",
+          select: "name",
+        },
+      })
       .populate("sessions.teachers.teacher", "first_name last_name email")
       .skip(skip)
       .limit(limit)
@@ -39,7 +46,7 @@ class planning_service {
     const data = await Planning.findByIdAndUpdate(
       id,
       { status: "deleted" },
-      { new: true }
+      { new: true },
     );
     return data;
   }
@@ -63,7 +70,7 @@ class planning_service {
     //* Update teacher status in all sessions where they are assigned
     for (const session of planning.sessions) {
       const teacher_entry = session.teachers.find(
-        (t) => t.teacher.toString() === teacher_id
+        (t) => t.teacher.toString() === teacher_id,
       );
       if (teacher_entry) {
         teacher_entry.status = status;
