@@ -68,9 +68,9 @@ class components_controller {
         module: "MD",
         app: "AP",
         resource: "RS",
-        exam: "EX"
+        exam: "EX",
       };
-      
+
       const counter = await generate_counter(`component_${type}`);
       const padded_counter = String(counter).padStart(2, "0");
       const uid = `${type_prefixes[type]}-${padded_counter}`;
@@ -131,6 +131,33 @@ class components_controller {
     } catch (error) {
       logger.error({
         context: "components.controller.get_components_by_type",
+        message: error.message,
+        stack: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        stack: error.stack,
+      });
+    }
+  }
+
+  async get_components_dropdown(req, res) {
+    try {
+      const { type } = req.query;
+      const filters = {
+        type,
+      };
+      const data = await components_service.find_dropdown(filters);
+      return success_response(res, {
+        status: 200,
+        message: "Components found successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "components.controller.get_components_dropdown",
         message: error.message,
         stack: error.stack,
       });

@@ -46,6 +46,11 @@ class components_service {
   async total_count(filters = {}) {
     return await Component.countDocuments(filters);
   }
+
+  async find_dropdown(filters = {}) {
+    const data = await Component.find(filters).select("name");
+    return data;
+  }
 }
 
 module.exports = new components_service();

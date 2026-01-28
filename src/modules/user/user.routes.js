@@ -33,11 +33,29 @@ router.post(
   user_controller.bulk_delete_admins,
 );
 
+router.get(
+  "/dropdown",
+  rate_limit(PRESETS.public),
+  user_controller.get_dropdown,
+);
+
 router
   .route("/teacher/:id")
-  .get(rate_limit(PRESETS.public), validate_object_id(), user_controller.get_teacher)
-  .put(rate_limit(PRESETS.api), validate_object_id(), user_controller.update_teacher)
-  .delete(rate_limit(PRESETS.api), validate_object_id(), user_controller.delete_teacher);
+  .get(
+    rate_limit(PRESETS.public),
+    validate_object_id(),
+    user_controller.get_teacher,
+  )
+  .put(
+    rate_limit(PRESETS.api),
+    validate_object_id(),
+    user_controller.update_teacher,
+  )
+  .delete(
+    rate_limit(PRESETS.api),
+    validate_object_id(),
+    user_controller.delete_teacher,
+  );
 
 router.patch(
   "/:id/status",
@@ -48,6 +66,10 @@ router.patch(
 
 router
   .route("/:id")
-  .delete(rate_limit(PRESETS.api), validate_object_id(), user_controller.delete_admin);
+  .delete(
+    rate_limit(PRESETS.api),
+    validate_object_id(),
+    user_controller.delete_admin,
+  );
 
 module.exports = router;

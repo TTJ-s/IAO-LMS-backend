@@ -8,6 +8,7 @@ const Country = require("./country.model");
 const Intake = require("./intake.model");
 const Language = require("./language.model");
 const Payment = require("./payment.model");
+const Planning = require("./planning.model");
 const Program = require("./program.model");
 const Role = require("./role.model");
 const TeacherRole = require("./teacher_roles.model");
@@ -26,6 +27,7 @@ module.exports = {
   Application,
   Batch,
   Payment,
+  Planning,
   Academic,
   TeacherTitle,
   TeacherRole,
