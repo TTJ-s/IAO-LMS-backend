@@ -38,7 +38,7 @@ class planning_service {
   async delete(id) {
     const data = await Planning.findByIdAndUpdate(
       id,
-      { status: "inactive" },
+      { status: "deleted" },
       { new: true }
     );
     return data;
