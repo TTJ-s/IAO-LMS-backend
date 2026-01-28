@@ -14,7 +14,11 @@ class user_service {
       .skip(skip)
       .limit(limit)
       .sort(sort)
-      .populate("role_access").populate("academic_degree").populate("teacher_role").populate("location").populate("language");
+      .populate("role_access")
+      .populate("academic_degree")
+      .populate("teacher_role")
+      .populate("location")
+      .populate("language");
     return data;
   }
 
@@ -90,6 +94,11 @@ class user_service {
 
   async total_count(filters = {}) {
     const data = await User.countDocuments(filters);
+    return data;
+  }
+
+  async find_dropdown(filters = {}) {
+    const data = await User.find(filters).select("name");
     return data;
   }
 }

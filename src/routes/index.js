@@ -14,6 +14,7 @@ const academic_route = require("../modules/academic/academic.routes");
 const teacher_title_route = require("../modules/master-data/teacher-title/teacher-title.routes");
 const teacher_role_route = require("../modules/master-data/teacher-role/teacher-role.routes");
 const components_routes = require("../modules/components/components.routes");
+const planning_route = require("../modules/planning/planning.routes");
 const program_test_route = require("../modules/program/program.test.routes");
 const { verify_jwt } = require("../middlewares/auth.middleware");
 const { validate_api_key } = require("../middlewares/apikey.middleware");
@@ -48,5 +49,7 @@ router.use("/application", application_route);
 router.use("/academic", academic_route);
 //* Components management routes
 router.use("/components", components_routes);
+//* Planning management routes
+router.use("/planning", planning_route);
 
 module.exports = router;

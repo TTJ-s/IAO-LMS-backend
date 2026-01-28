@@ -512,6 +512,33 @@ class user_controller {
       });
     }
   }
+
+  async get_dropdown(req, res) {
+    try {
+      const { role } = req.query;
+      const filters = {
+        role,
+      };
+      const data = await user_service.find_dropdown(filters);
+      return success_response(res, {
+        status: 200,
+        message: "Dropdowns fetched successfully",
+        data,
+      });
+    } catch (error) {
+      logger.error({
+        context: "user.controller.get_dropdowns",
+        message: error.message,
+        errors: error.stack,
+      });
+
+      return error_response(res, {
+        status: 500,
+        message: error.message,
+        errors: error.stack,
+      });
+    }
+  }
 }
 
 module.exports = new user_controller();
