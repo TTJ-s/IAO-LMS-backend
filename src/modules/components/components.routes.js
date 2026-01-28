@@ -16,8 +16,23 @@ router
   );
 
 router
+  .route("/dropdown")
+  .get(
+    rate_limit(PRESETS.public),
+    components_controller.get_components_dropdown,
+  );
+
+router
   .route("/:id")
-  .get(rate_limit(PRESETS.public), validate_object_id(), components_controller.get_component_by_id)
-  .put(rate_limit(PRESETS.api), validate_object_id(), components_controller.update_component);
+  .get(
+    rate_limit(PRESETS.public),
+    validate_object_id(),
+    components_controller.get_component_by_id,
+  )
+  .put(
+    rate_limit(PRESETS.api),
+    validate_object_id(),
+    components_controller.update_component,
+  );
 
 module.exports = router;
