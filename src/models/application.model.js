@@ -22,7 +22,6 @@ const application_schema = new mongoose.Schema(
       enum: ["pending", "paid", "failed"],
       default: "pending",
     },
-    current_step: { type: Number, default: 0 },
     decision_date: { type: Date },
     status: {
       type: String,
