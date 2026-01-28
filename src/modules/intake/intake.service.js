@@ -344,6 +344,19 @@ class intake_service {
   async generate_intake_name(program_name, city_name) {
     return `${city_name} ${program_name}`;
   }
+
+  async find_batch_by_program_id(id) {
+    const intakes = await Intake.find({
+      program: id,
+      status: "open",
+    });
+    const intake_ids = intakes.map((intake) => intake._id);
+    const data = await Batch.find({
+      intake: { $in: intake_ids },
+      status: "open",
+    }).select("name");
+    return data;
+  }
 }
 
 module.exports = new intake_service();
