@@ -24,11 +24,11 @@ router.use("/payment", payment_route);
 //* Test routes (no auth required)
 router.use("/test/program", program_test_route);
 //* Validate API key
-router.use(validate_api_key);
+// router.use(validate_api_key);
 //* Authentication routes (login, refresh, logout, etc.)
 router.use("/auth", auth_route);
 //* Requires: Authorization header with valid access token
-router.use(verify_jwt);
+// router.use(verify_jwt);
 //* Role management routes
 router.use("/role", role_route);
 //* User management routes

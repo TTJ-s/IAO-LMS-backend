@@ -32,9 +32,9 @@ router
     planning_controller.delete_planning,
   );
 
-//* Update teacher status in a session
+//* Update teacher status in a session (by session ID)
 router.patch(
-  "/:id/teacher-status",
+  "/session/:id/teacher-status",
   rate_limit(PRESETS.api),
   validate_object_id(),
   planning_controller.update_teacher_status,
