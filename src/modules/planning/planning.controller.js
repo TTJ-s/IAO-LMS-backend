@@ -36,8 +36,13 @@ class planning_controller {
       if (value.sessions && Array.isArray(value.sessions)) {
         value.sessions = value.sessions.map((session) => ({
           ...session,
-          session_date: session.session_date ? new Date(session.session_date) : null,
-          start_time: combine_date_time(session.session_date, session.start_time),
+          session_date: session.session_date
+            ? new Date(session.session_date)
+            : null,
+          start_time: combine_date_time(
+            session.session_date,
+            session.start_time,
+          ),
           end_time: combine_date_time(session.session_date, session.end_time),
         }));
       }
@@ -115,17 +120,18 @@ class planning_controller {
   async get_plannings_by_teacher(req, res) {
     try {
       const { page = 1, limit = 10 } = req.query;
-      const teacher = req.user._id.toString();
-      const filters = { "sessions.teachers.teacher": teacher };
+      const teacher_id = req.user._id.toString();
       const options = { page: parseInt(page), limit: parseInt(limit) };
-      const sort = { createdAt: -1 };
+      const sort = { session_date: -1 };
+
       const [data, total_count] = await Promise.all([
-        planning_service.find_all(filters, options, sort),
-        planning_service.total_count(filters),
+        planning_service.find_sessions_by_teacher(teacher_id, options, sort),
+        planning_service.count_sessions_by_teacher(teacher_id),
       ]);
+
       return success_response(res, {
         status: 200,
-        message: "Plannings retrieved successfully",
+        message: "Sessions retrieved successfully",
         data,
         total_count,
       });
@@ -210,8 +216,13 @@ class planning_controller {
       if (value.sessions && Array.isArray(value.sessions)) {
         value.sessions = value.sessions.map((session) => ({
           ...session,
-          session_date: session.session_date ? new Date(session.session_date) : null,
-          start_time: combine_date_time(session.session_date, session.start_time),
+          session_date: session.session_date
+            ? new Date(session.session_date)
+            : null,
+          start_time: combine_date_time(
+            session.session_date,
+            session.start_time,
+          ),
           end_time: combine_date_time(session.session_date, session.end_time),
         }));
       }
@@ -290,6 +301,13 @@ class planning_controller {
       const { status } = req.body;
       const teacher_id = req.user._id.toString();
 
+      if (!id) {
+        return error_response(res, {
+          status: 400,
+          message: "Session ID is required",
+        });
+      }
+
       if (!status) {
         return error_response(res, {
           status: 400,
@@ -300,8 +318,7 @@ class planning_controller {
       if (!["accepted", "rejected"].includes(status)) {
         return error_response(res, {
           status: 400,
-          message:
-            "Invalid status. Must be 'pending', 'accepted', or 'rejected'",
+          message: "Invalid status. Must be 'accepted' or 'rejected'",
         });
       }
 
@@ -314,14 +331,14 @@ class planning_controller {
       if (!data) {
         return error_response(res, {
           status: 404,
-          message: "Planning or teacher assignment not found",
+          message: "Session or teacher assignment not found",
         });
       }
 
       logger.info({
         context: "planning.controller.update_teacher_status",
         message: "Teacher status updated successfully",
-        planning_id: id,
+        session_id: id,
         teacher_id,
         status,
       });

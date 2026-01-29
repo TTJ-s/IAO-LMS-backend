@@ -9,6 +9,7 @@ const Intake = require("./intake.model");
 const Language = require("./language.model");
 const Payment = require("./payment.model");
 const Planning = require("./planning.model");
+const Session = require("./session.model");
 const Program = require("./program.model");
 const Role = require("./role.model");
 const TeacherRole = require("./teacher_roles.model");
@@ -28,6 +29,7 @@ module.exports = {
   Batch,
   Payment,
   Planning,
+  Session,
   Academic,
   TeacherTitle,
   TeacherRole,
