@@ -166,11 +166,12 @@ class planning_service {
   }
 
   async find_sessions_by_teacher(
-    teacher_id,
+    filters = {},
     options = {},
     sort = { start_date: -1, start_time: -1 },
   ) {
     const { page = 1, limit = 10 } = options;
+    const { teacher_id } = filters;
     const skip = (page - 1) * limit;
 
     const pipeline = [
@@ -203,6 +204,16 @@ class planning_service {
           },
         },
       },
+      //* Filter by teacher status if provided
+      ...(filters.status
+        ? [
+            {
+              $match: {
+                "teacher_status.status": filters.status,
+              },
+            },
+          ]
+        : []),
       //* Lookup planning details
       {
         $lookup: {
@@ -278,10 +289,23 @@ class planning_service {
       {
         $unwind: { path: "$city_details", preserveNullAndEmptyArrays: true },
       },
+      //* Lookup batch details from planning
+      {
+        $lookup: {
+          from: "batches",
+          localField: "planning_details.batch",
+          foreignField: "_id",
+          as: "batch_details",
+        },
+      },
+      {
+        $unwind: { path: "$batch_details", preserveNullAndEmptyArrays: true },
+      },
       //* Project session-wise data
       {
         $project: {
           _id: 1,
+          batch_name: "$batch_details.name",
           planning_id: "$planning_details._id",
           program_uid: "$program_details.uid",
           program_name: "$program_details.name",
@@ -309,15 +333,48 @@ class planning_service {
     return data;
   }
 
-  async count_sessions_by_teacher(teacher_id) {
+  async count_sessions_by_teacher(filters = {}) {
+    const { teacher_id } = filters;
     //* Count sessions where teacher is assigned
-    const result = await Session.aggregate([
+    const pipeline = [
       {
         $match: {
           "teachers.teacher": new mongoose.Types.ObjectId(teacher_id),
           status: { $ne: "deleted" },
         },
       },
+      //* Extract teacher's status from the session
+      {
+        $addFields: {
+          teacher_status: {
+            $arrayElemAt: [
+              {
+                $filter: {
+                  input: "$teachers",
+                  as: "t",
+                  cond: {
+                    $eq: [
+                      "$$t.teacher",
+                      new mongoose.Types.ObjectId(teacher_id),
+                    ],
+                  },
+                },
+              },
+              0,
+            ],
+          },
+        },
+      },
+      //* Filter by teacher status if provided
+      ...(filters.status
+        ? [
+            {
+              $match: {
+                "teacher_status.status": filters.status,
+              },
+            },
+          ]
+        : []),
       {
         $lookup: {
           from: "plannings",
@@ -337,8 +394,9 @@ class planning_service {
       {
         $count: "total",
       },
-    ]);
+    ];
 
+    const result = await Session.aggregate(pipeline);
     return result.length > 0 ? result[0].total : 0;
   }
 }

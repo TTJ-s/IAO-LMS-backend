@@ -119,14 +119,18 @@ class planning_controller {
 
   async get_plannings_by_teacher(req, res) {
     try {
-      const { page = 1, limit = 10 } = req.query;
+      const { page = 1, limit = 10, status } = req.query;
       const teacher_id = req.user._id.toString();
       const options = { page: parseInt(page), limit: parseInt(limit) };
       const sort = { session_date: -1 };
+      const filters = { teacher_id };
+      if (status && ["pending", "accepted", "rejected"].includes(status)) {
+        filters.status = status;
+      }
 
       const [data, total_count] = await Promise.all([
-        planning_service.find_sessions_by_teacher(teacher_id, options, sort),
-        planning_service.count_sessions_by_teacher(teacher_id),
+        planning_service.find_sessions_by_teacher(filters, options, sort),
+        planning_service.count_sessions_by_teacher(filters),
       ]);
 
       return success_response(res, {
