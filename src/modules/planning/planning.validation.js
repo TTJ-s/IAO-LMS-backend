@@ -33,6 +33,7 @@ const session_schema = Joi.object({
 exports.create_planning_validation = Joi.object({
   batch: Joi.string().required(),
   component: Joi.string().required(),
+  description: Joi.string().required(),
   sessions: Joi.array().items(session_schema).required(),
   venue: Joi.string().required(),
   status: Joi.string(),
@@ -41,6 +42,7 @@ exports.create_planning_validation = Joi.object({
 exports.update_planning_validation = Joi.object({
   batch: Joi.string(),
   component: Joi.string(),
+  description: Joi.string(),
   sessions: Joi.array().items(session_schema),
   venue: Joi.string(),
   status: Joi.string(),
